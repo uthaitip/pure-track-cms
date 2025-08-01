@@ -1,7 +1,7 @@
 <template>
   <aside class="menu w-64 min-h-full bg-base-100 text-base-content">
     <!-- User Profile -->
-    <div class="px-4 text-2xl font-bold">PureTrack CMS Demo</div>
+    <div class="px-4 text-2xl font-bold">PureTrack Demo</div>
     <div class="p-4 border-b border-base-300">
       <div class="flex items-center space-x-3">
         <div class="avatar placeholder">
