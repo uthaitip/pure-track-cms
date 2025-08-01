@@ -1,0 +1,6 @@
+{
+  "clearScreen": false,
+  "optimizeDeps": {
+    "force": true
+  }
+}
