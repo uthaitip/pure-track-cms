@@ -40,9 +40,3 @@
     </footer>
   </div>
 </template>
-
-<style scoped>
-.router-link-active {
-  @apply text-primary-600;
-}
-</style>
