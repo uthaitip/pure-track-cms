@@ -1,110 +1,8 @@
 import { authenticateToken } from '../../utils/auth'
-
-// Mock users storage (same as in other files)
-let mockUsers = [
-  {
-    _id: '64a1b1234567890123456789',
-    email: 'admin@example.com',
-    firstName: 'Admin',
-    lastName: 'User',
-    role: {
-      name: 'admin',
-      permissions: [
-        { name: 'view_dashboard' },
-        { name: 'manage_users' },
-        { name: 'manage_system' },
-        { name: 'view_reports' },
-        { name: 'manage_roles' }
-      ]
-    },
-    isActive: true,
-    createdAt: '2024-01-01T00:00:00.000Z'
-  },
-  {
-    _id: '64a1b1234567890123456790',
-    email: 'hr@example.com',
-    firstName: 'HR',
-    lastName: 'Manager',
-    role: {
-      name: 'hr',
-      permissions: [
-        { name: 'view_dashboard' },
-        { name: 'manage_hr' },
-        { name: 'view_users' },
-        { name: 'create_user' }
-      ]
-    },
-    isActive: true,
-    createdAt: '2024-01-01T00:00:00.000Z'
-  },
-  {
-    _id: '64a1b1234567890123456791', 
-    email: 'accountant@example.com',
-    firstName: 'Finance',
-    lastName: 'Manager',
-    role: {
-      name: 'accountant',
-      permissions: [
-        { name: 'view_dashboard' },
-        { name: 'view_reports' },
-        { name: 'view_analytics' }
-      ]
-    },
-    isActive: true,
-    createdAt: '2024-01-01T00:00:00.000Z'
-  },
-  {
-    _id: '64a1b1234567890123456792',
-    email: 'employee@example.com',
-    firstName: 'John',
-    lastName: 'Employee',
-    role: {
-      name: 'employee',
-      permissions: [
-        { name: 'view_dashboard' }
-      ]
-    },
-    isActive: true,
-    createdAt: '2024-01-01T00:00:00.000Z'
-  }
-]
-
-// Available roles with permissions
-const availableRoles = {
-  admin: {
-    name: 'admin',
-    permissions: [
-      { name: 'view_dashboard' },
-      { name: 'manage_users' },
-      { name: 'manage_system' },
-      { name: 'view_reports' },
-      { name: 'manage_roles' }
-    ]
-  },
-  hr: {
-    name: 'hr',
-    permissions: [
-      { name: 'view_dashboard' },
-      { name: 'manage_hr' },
-      { name: 'view_users' },
-      { name: 'create_user' }
-    ]
-  },
-  accountant: {
-    name: 'accountant',
-    permissions: [
-      { name: 'view_dashboard' },
-      { name: 'view_reports' },
-      { name: 'view_analytics' }
-    ]
-  },
-  employee: {
-    name: 'employee',
-    permissions: [
-      { name: 'view_dashboard' }
-    ]
-  }
-}
+import { User } from '../../models/User'
+import { Role } from '../../models/Role'
+import { Permission } from '../../models/Permission'
+import mongoose from 'mongoose'
 
 interface CreateUserRequest {
   email: string
@@ -145,8 +43,16 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    // Connect to MongoDB
+    if (mongoose.connection.readyState !== 1) {
+      await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/cms-dev')
+    }
+
     // Check if email already exists
-    const existingUser = mockUsers.find(user => user.email.toLowerCase() === email.toLowerCase())
+    const existingUser = await User.findOne({ 
+      email: email.toLowerCase() 
+    }).lean()
+    
     if (existingUser) {
       throw createError({
         statusCode: 409,
@@ -154,36 +60,44 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Validate role
-    if (!availableRoles[roleName]) {
+    // Find the role document
+    const roleDoc = await Role.findOne({ name: roleName }).populate('permissions').lean()
+    if (!roleDoc) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Invalid role specified'
       })
     }
 
-    // Generate new user ID
-    const newUserId = '64a1b1234567890123' + (Date.now().toString().slice(-6))
-
-    // Create new user
-    const newUser = {
-      _id: newUserId,
+    // Create new user in database
+    const newUser = new User({
       email: email.toLowerCase(),
+      password, // Will be hashed by pre-save middleware
       firstName,
       lastName,
-      role: availableRoles[roleName],
-      isActive,
-      createdAt: new Date().toISOString()
-    }
+      role: roleDoc._id,
+      isActive
+    })
 
-    // Add to mock users array
-    mockUsers.push(newUser)
+    const savedUser = await newUser.save()
+
+    // Populate the role and permissions for response
+    const populatedUser = await User.findById(savedUser._id)
+      .populate({
+        path: 'role',
+        populate: {
+          path: 'permissions',
+          model: 'Permission'
+        }
+      })
+      .select('-password')
+      .lean()
 
     return {
       success: true,
       message: 'User created successfully',
       data: {
-        user: newUser
+        user: populatedUser
       }
     }
 
@@ -192,6 +106,31 @@ export default defineEventHandler(async (event) => {
     
     if (error.statusCode) {
       throw error
+    }
+    
+    // Handle MongoDB connection errors
+    if (error.message?.includes('ECONNREFUSED') || error.message?.includes('MongoNetworkError')) {
+      throw createError({
+        statusCode: 503,
+        statusMessage: 'Database connection failed'
+      })
+    }
+
+    // Handle MongoDB validation errors
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map((err: any) => err.message)
+      throw createError({
+        statusCode: 400,
+        statusMessage: `Validation error: ${validationErrors.join(', ')}`
+      })
+    }
+
+    // Handle duplicate key errors (unique constraints)
+    if (error.code === 11000) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: 'User with this email already exists'
+      })
     }
     
     throw createError({

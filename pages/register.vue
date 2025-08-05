@@ -134,9 +134,11 @@ const handleRegister = async () => {
   loading.value = true
   error.value = ''
 
+
   const result = await register({
     ...form,
-    roleName: form.roleName as 'admin' | 'employee' | 'accountant' | 'hr'
+    roleName: form.roleName as 'admin' | 'employee' | 'accountant' | 'hr',
+    role: form.roleName as 'admin' | 'employee' | 'accountant' | 'hr',
   })
   
   if (!result.success) {

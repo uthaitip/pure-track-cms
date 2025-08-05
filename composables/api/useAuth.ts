@@ -1,45 +1,14 @@
-export interface User {
-  _id: string
-  email: string
-  firstName: string
-  lastName: string
-  role: {
-    _id: string
-    name: 'admin' | 'employee' | 'accountant' | 'hr'
-    permissions: Permission[]
-  }
-  isActive: boolean
-  lastLogin?: string
-  createdAt: string
-  updatedAt: string
-}
-
-export interface Permission {
-  _id: string
-  name: string
-  description?: string
-}
-
-export interface LoginCredentials {
-  email: string
-  password: string
-}
-
-export interface RegisterData {
-  email: string
-  password: string
-  firstName: string
-  lastName: string
-  roleName: 'admin' | 'employee' | 'accountant' | 'hr'
-}
+import type { User, LoginCredentials, RegisterData } from '../interfaces/user'
+import { apiLogin, apiLogout, apiRegister, apiMe } from '../constants/api-endpoints'
 
 export const useAuth = () => {
   const user = useState<User | null>('auth.user', () => null)
-  const token = useCookie('auth-token', {
+  const token = useCookie<string | null>('auth-token', {
     maxAge: 60 * 60 * 24 * 7, // 7 days
     httpOnly: false,
-    secure: true,
-    sameSite: 'strict'
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    default: () => null
   })
 
   const isLoggedIn = computed(() => !!user.value && !!token.value)
@@ -49,7 +18,7 @@ export const useAuth = () => {
       const { data } = await $fetch<{
         success: boolean
         data: { user: User; token: string }
-      }>('/api/auth/login', {
+      }>(apiLogin, {
         method: 'POST',
         body: credentials
       })
@@ -75,7 +44,7 @@ export const useAuth = () => {
       const { data } = await $fetch<{
         success: boolean
         data: { user: User; token: string }
-      }>('/api/auth/register', {
+      }>(apiRegister, {
         method: 'POST',
         body: registerData
       })
@@ -98,7 +67,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await $fetch('/api/auth/logout', { method: 'POST' })
+      await $fetch(apiLogout, { method: 'POST' })
     } catch (error) {
       console.error('Logout error:', error)
     } finally {
@@ -115,7 +84,7 @@ export const useAuth = () => {
       const { data } = await $fetch<{
         success: boolean
         data: { user: User }
-      }>('/api/user/me', {
+      }>(apiMe, {
         headers: {
           Authorization: `Bearer ${token.value}`
         }

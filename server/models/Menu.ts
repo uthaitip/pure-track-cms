@@ -5,7 +5,7 @@ export interface IMenu {
   name: string
   path: string
   icon?: string
-  roles: ('admin' | 'employee' | 'accountant' | 'hr')[]
+  roles: ('admin' | 'employee' | 'accountant' | 'hr' | 'manager')[]
   parent?: mongoose.Schema.Types.ObjectId
   order: number
   isActive: boolean
@@ -30,7 +30,7 @@ const menuSchema = new mongoose.Schema<IMenu>({
   },
   roles: [{
     type: String,
-    enum: ['admin', 'employee', 'accountant', 'hr'],
+    enum: ['admin', 'employee', 'accountant', 'hr', 'manager'],
     required: true
   }],
   parent: {

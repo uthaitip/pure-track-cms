@@ -27,7 +27,7 @@
     <!-- Sidebar -->
     <div class="drawer-side">
       <label for="drawer-toggle" class="drawer-overlay"></label>
-      <AppSidebar v-if="mounted" />
+      <UILayoutAppSidebar v-if="mounted" />
       <div v-else class="w-64 min-h-full bg-base-200">
         <div class="p-4">
           <div class="skeleton h-6 w-32 mb-2"></div>

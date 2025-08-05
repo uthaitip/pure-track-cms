@@ -1,76 +1,6 @@
 import { signJWT } from '../../utils/jwt'
-
-// Mock user data for testing (replace with database when DB is working)
-const mockUsers = [
-  {
-    _id: '64a1b1234567890123456789',
-    email: 'admin@example.com',
-    firstName: 'Admin',
-    lastName: 'User',
-    role: {
-      name: 'admin',
-      permissions: [
-        { name: 'view_dashboard' },
-        { name: 'manage_users' },
-        { name: 'manage_system' },
-        { name: 'view_reports' },
-        { name: 'manage_roles' }
-      ]
-    },
-    isActive: true
-  },
-  {
-    _id: '64a1b1234567890123456790',
-    email: 'hr@example.com',
-    firstName: 'HR',
-    lastName: 'Manager',
-    role: {
-      name: 'hr',
-      permissions: [
-        { name: 'view_dashboard' },
-        { name: 'manage_hr' },
-        { name: 'view_users' },
-        { name: 'create_user' }
-      ]
-    },
-    isActive: true
-  },
-  {
-    _id: '64a1b1234567890123456791',
-    email: 'accountant@example.com',
-    firstName: 'Finance',
-    lastName: 'Manager',
-    role: {
-      name: 'accountant',
-      permissions: [
-        { name: 'view_dashboard' },
-        { name: 'view_reports' },
-        { name: 'view_analytics' }
-      ]
-    },
-    isActive: true
-  },
-  {
-    _id: '64a1b1234567890123456792',
-    email: 'employee@example.com',
-    firstName: 'John',
-    lastName: 'Employee',
-    role: {
-      name: 'employee',
-      permissions: [
-        { name: 'view_dashboard' }
-      ]
-    },
-    isActive: true
-  }
-]
-
-const validCredentials = {
-  'admin@example.com': 'admin123',
-  'hr@example.com': 'password123',
-  'accountant@example.com': 'password123',
-  'employee@example.com': 'password123'
-}
+import { connectDB } from '../../utils/db'
+import { User } from '../../models/User'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -83,8 +13,19 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Find mock user
-    const user = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase())
+    // Connect to MongoDB
+    await connectDB()
+
+    // Find user in database
+    const user = await User.findOne({ 
+      email: email.toLowerCase() 
+    }).populate({
+      path: 'role',
+      populate: {
+        path: 'permissions',
+        model: 'Permission'
+      }
+    }).lean()
     
     if (!user) {
       throw createError({
@@ -101,13 +42,19 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Check password
-    if (validCredentials[email as keyof typeof validCredentials] !== password) {
+    // Check password using the User model method
+    const userDoc = await User.findById(user._id)
+    const isPasswordValid = await userDoc?.comparePassword(password)
+    
+    if (!isPasswordValid) {
       throw createError({
         statusCode: 401,
         statusMessage: 'Invalid credentials'
       })
     }
+
+    // Update last login
+    await User.findByIdAndUpdate(user._id, { lastLogin: new Date() })
 
     // Generate JWT token
     const token = signJWT(user as any)
@@ -126,6 +73,14 @@ export default defineEventHandler(async (event) => {
     
     if (error.statusCode) {
       throw error
+    }
+
+    // Handle MongoDB connection errors
+    if (error.message?.includes('ECONNREFUSED') || error.message?.includes('MongoNetworkError')) {
+      throw createError({
+        statusCode: 503,
+        statusMessage: 'Database connection failed'
+      })
     }
     
     throw createError({

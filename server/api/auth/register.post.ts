@@ -8,18 +8,27 @@ interface RegisterRequest {
   password: string
   firstName: string
   lastName: string
-  roleName: 'admin' | 'employee' | 'accountant' | 'hr'
+  roleName?: 'admin' | 'employee' | 'accountant' | 'hr' | 'manager'
 }
 
 export default defineEventHandler(async (event) => {
   try {
-    const { email, password, firstName, lastName, roleName }: RegisterRequest = await readBody(event)
+    const { email, password, firstName, lastName, roleName = 'employee' }: RegisterRequest = await readBody(event)
 
     // Validate input
-    if (!email || !password || !firstName || !lastName || !roleName) {
+    if (!email || !password || !firstName || !lastName) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'All fields are required'
+        statusMessage: 'Email, password, first name, and last name are required'
+      })
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Please provide a valid email address'
       })
     }
 
@@ -87,6 +96,31 @@ export default defineEventHandler(async (event) => {
     
     if (error.statusCode) {
       throw error
+    }
+    
+    // Handle MongoDB connection errors
+    if (error.message?.includes('ECONNREFUSED') || error.message?.includes('MongoNetworkError')) {
+      throw createError({
+        statusCode: 503,
+        statusMessage: 'Database connection failed'
+      })
+    }
+
+    // Handle MongoDB validation errors
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map((err: any) => err.message)
+      throw createError({
+        statusCode: 400,
+        statusMessage: `Validation error: ${validationErrors.join(', ')}`
+      })
+    }
+
+    // Handle duplicate key errors (unique constraints)
+    if (error.code === 11000) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: 'User with this email already exists'
+      })
     }
     
     throw createError({

@@ -75,7 +75,7 @@ export default defineNuxtConfig({
   // Build optimizations
   build: {
     // Transpile specific packages if needed
-    transpile: []
+    transpile: ['docx', 'file-saver']
   },
 
   // Runtime config for environment variables
@@ -96,10 +96,22 @@ export default defineNuxtConfig({
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
-      title: 'CMS System - Role-based Management',
+      title: 'Store Stock Management',
       meta: [
-        { name: 'description', content: 'A modern role-based content management system built with Nuxt 3' }
+        { name: 'description', content: 'A modern inventory and stock management system built with Nuxt 3' }
       ]
     }
-  }
+  },
+
+  // Component configuration following main_frontend pattern
+  components: [
+    { path: './components', prefix: 'UI' }
+  ],
+
+  // Auto-import composables from subdirectories
+  imports: {
+    dirs: ['composables/**']
+  },
+
+  compatibilityDate: '2025-08-04'
 })

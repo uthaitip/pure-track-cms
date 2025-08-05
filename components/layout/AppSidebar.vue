@@ -83,6 +83,9 @@
 </template>
 
 <script setup lang="ts">
+import { useAuth } from '~/composables/api/useAuth'
+import { useMenu } from '~/composables/api/useMenu'
+
 const { user, logout } = useAuth()
 const { menus, fetchMenus, loading, error } = useMenu()
 
@@ -109,20 +112,10 @@ const handleLogout = async () => {
   await logout()
 }
 
-// Fetch menus on mount and when user changes
-const initializeMenus = async () => {
-  if (user.value?.role?.name) {
-    await fetchMenus()
-  }
-}
-
-onMounted(() => {
-  initializeMenus()
-})
-
+// Initialize menus when user role is available
 watch(user, (newUser) => {
   if (newUser?.role?.name) {
-    initializeMenus()
+    fetchMenus()
   }
 }, { immediate: true, deep: true })
 </script>

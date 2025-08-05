@@ -40,15 +40,14 @@
           </div>
 
           <div class="form-control mt-6">
-            <AppButton
+            <button
               type="submit"
-              variant="primary"
-              :loading="loading"
               :disabled="loading"
-              class="w-full"
+              class="btn btn-primary w-full"
             >
+              <span v-if="loading" class="loading loading-spinner loading-sm"></span>
               {{ loading ? 'Signing in...' : 'Sign in' }}
-            </AppButton>
+            </button>
           </div>
 
           <div class="divider">OR</div>

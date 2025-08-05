@@ -133,21 +133,22 @@
 
           <!-- Form Actions -->
           <div class="flex justify-end space-x-4 pt-6 border-t">
-            <AppButton
-              variant="secondary"
+            <button
+              class="btn btn-ghost"
               @click="$router.back()"
               type="button"
             >
               Cancel
-            </AppButton>
+            </button>
             
-            <AppButton
-              variant="primary"
+            <button
+              class="btn btn-primary"
               type="submit"
               :disabled="loading"
             >
+              <span v-if="loading" class="loading loading-spinner loading-sm"></span>
               {{ loading ? 'Creating User...' : 'Create User' }}
-            </AppButton>
+            </button>
           </div>
         </form>
       </div>

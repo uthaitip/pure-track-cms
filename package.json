@@ -13,14 +13,20 @@
   "dependencies": {
     "@nuxtjs/color-mode": "^3.5.1",
     "bcryptjs": "^2.4.3",
+    "docx": "^9.5.1",
+    "file-saver": "^2.0.5",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.1",
+    "lodash-es": "^4.17.21",
     "mongoose": "^8.7.0",
-    "nuxt": "^3.13.2"
+    "nuxt": "3.13.2",
+    "query-string-object": "0.2.5"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/lodash-es": "^4.17.12",
     "daisyui": "^5.0.50",
     "typescript": "^5.6.2",
     "vue-tsc": "^2.1.6"

@@ -1,78 +1,6 @@
 import { authenticateToken } from '../../utils/auth'
-
-// Mock menus data
-const mockMenus = [
-  {
-    _id: '1',
-    name: 'Dashboard',
-    path: '/dashboard',
-    icon: 'fas fa-home',
-    roles: ['admin', 'hr', 'accountant', 'employee'],
-    order: 1,
-    isActive: true,
-    children: []
-  },
-  {
-    _id: '2',  
-    name: 'Admin Panel',
-    path: '/dashboard/admin',
-    icon: 'fas fa-cogs',
-    roles: ['admin'],
-    order: 2,
-    isActive: true,
-    children: []
-  },
-  {
-    _id: '3',
-    name: 'User Management',
-    path: '/dashboard/users',
-    icon: 'fas fa-users',
-    roles: ['admin', 'hr'],
-    order: 3,
-    isActive: true,
-    children: []
-  },
-  {
-    _id: '7',
-    name: 'Add User',
-    path: '/dashboard/add-user',
-    icon: 'fas fa-user-plus',
-    roles: ['admin', 'hr'],
-    order: 3.5,
-    isActive: true,
-    children: []
-  },
-  {
-    _id: '4',
-    name: 'Reports',
-    path: '/dashboard/reports',
-    icon: 'fas fa-chart-bar',
-    roles: ['admin', 'accountant', 'hr'],
-    order: 4,
-    isActive: true,
-    children: []
-  },
-  {
-    _id: '5',
-    name: 'HR Management',
-    path: '/dashboard/hr',
-    icon: 'fas fa-user-tie',
-    roles: ['admin', 'hr'],
-    order: 5,
-    isActive: true,
-    children: []
-  },
-  {
-    _id: '6',
-    name: 'Settings',
-    path: '/dashboard/settings',
-    icon: 'fas fa-cog',
-    roles: ['admin', 'hr', 'accountant', 'employee'],
-    order: 6,
-    isActive: true,
-    children: []
-  }
-]
+import { connectDB } from '../../utils/db'
+import { Menu } from '../../models/Menu'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -86,16 +14,23 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Filter menus based on user role
-    const userMenus = mockMenus.filter(menu => 
-      menu.roles.includes(userRole) && menu.isActive
-    ).sort((a, b) => a.order - b.order)
+    // Connect to MongoDB
+    await connectDB()
+
+    // Get all menus and filter by user role
+    const allMenus = await Menu.find({
+      roles: userRole,
+      isActive: true
+    }).sort({ order: 1 }).lean()
+
+    // Build menu tree structure
+    const menuTree = buildMenuTree(allMenus)
 
     return {
       success: true,
       message: 'Menus retrieved successfully',
       data: {
-        menus: userMenus
+        menus: menuTree
       }
     }
 
@@ -105,6 +40,14 @@ export default defineEventHandler(async (event) => {
     if (error.statusCode) {
       throw error
     }
+
+    // Handle MongoDB connection errors
+    if (error.message?.includes('ECONNREFUSED') || error.message?.includes('MongoNetworkError')) {
+      throw createError({
+        statusCode: 503,
+        statusMessage: 'Database connection failed'
+      })
+    }
     
     throw createError({
       statusCode: 500,
@@ -112,3 +55,33 @@ export default defineEventHandler(async (event) => {
     })
   }
 })
+
+// Helper function to build menu tree structure
+function buildMenuTree(menus: any[]): any[] {
+  const menuMap = new Map<string, any>()
+  const rootMenus: any[] = []
+
+  // Create a map of all menus
+  menus.forEach(menu => {
+    menuMap.set(menu._id.toString(), { ...menu, children: [] })
+  })
+
+  // Build the tree structure
+  menus.forEach(menu => {
+    const menuItem = menuMap.get(menu._id.toString())!
+    
+    if (menu.parent) {
+      const parent = menuMap.get(menu.parent.toString())
+      if (parent) {
+        parent.children.push(menuItem)
+      } else {
+        // Parent not found, treat as root
+        rootMenus.push(menuItem)
+      }
+    } else {
+      rootMenus.push(menuItem)
+    }
+  })
+
+  return rootMenus.sort((a, b) => a.order - b.order)
+}
