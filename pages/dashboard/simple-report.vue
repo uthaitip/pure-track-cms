@@ -814,9 +814,8 @@ const printReport = () => {
         
         .report-image {
           width: 6.5cm !important;
-          height: auto !important;
-          max-height: 4.8cm !important;
-          object-fit: contain !important;
+          height: 4.8cm !important;
+          object-fit: cover !important;
           border: ` + borderWeight.value + `px solid #333 !important;
           border-radius: ` + borderRadius.value + `px !important;
           padding: ` + imageBorderPadding.value + `px !important;
@@ -1075,9 +1074,9 @@ const exportToWord = async () => {
 /* A4 paper dimensions: 210mm x 297mm */
 /* 40% of A4 width = 84mm ≈ 320px (at 96 DPI) */
 .report-image {
-  width: 320px;
-  height: 240px;
-  object-fit: contain;
+  width: 320px !important;
+  height: 240px !important;
+  object-fit: cover;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   background: white;
 }
@@ -1101,12 +1100,11 @@ const exportToWord = async () => {
 @media print {
   .report-image {
     width: 6.5cm !important;
-    height: auto !important;
-    max-height: 4.8cm !important;
+    height: 4.8cm !important;
     page-break-inside: avoid !important;
     page-break-after: avoid !important;
     page-break-before: avoid !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
     border: ` + borderWeight.value + `px solid #333 !important;
     border-radius: ` + borderRadius.value + `px !important;
     padding: ` + imageBorderPadding.value + `px !important;
