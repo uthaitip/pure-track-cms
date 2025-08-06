@@ -779,7 +779,7 @@ const handleSubmit = () => {
   })
 }
 
-// Function to create PDF with HTML2Canvas for better quality
+// Function to create PDF using iframe isolation to completely avoid CSS conflicts
 const createPDFFromHTML = async () => {
   // Dynamic import html2canvas
   const html2canvas = (await import('html2canvas')).default
@@ -792,87 +792,159 @@ const createPDFFromHTML = async () => {
   const buttons = reportContent.querySelectorAll('button')
   buttons.forEach(btn => btn.style.display = 'none')
   
-  // Create a clean clone of the report content to avoid CSS conflicts
-  const originalContent = reportContent.cloneNode(true)
-  
-  // Create a clean container with minimal styling
-  const cleanContainer = document.createElement('div')
-  cleanContainer.style.cssText = `
+  // Create an iframe to completely isolate from main page CSS
+  const iframe = document.createElement('iframe')
+  iframe.style.cssText = `
     position: fixed;
     top: -9999px;
     left: -9999px;
     width: 800px;
-    background: white;
-    font-family: 'Sarabun', sans-serif;
-    font-size: ${fontSize.value}px;
-    font-weight: ${fontWeight.value};
-    color: #333;
-    padding: 20px;
+    height: 1200px;
+    border: none;
     z-index: -1;
   `
+  document.body.appendChild(iframe)
   
-  // Copy content to clean container
-  cleanContainer.innerHTML = originalContent.innerHTML
+  // Wait for iframe to load
+  await new Promise(resolve => {
+    iframe.onload = resolve
+    if (iframe.contentDocument) resolve() // Already loaded
+  })
   
-  // Remove all class attributes to avoid CSS conflicts
-  const allElements = cleanContainer.getElementsByTagName('*')
-  for (let i = 0; i < allElements.length; i++) {
-    const element = allElements[i]
-    element.removeAttribute('class')
-    
-    // Apply inline styles based on element type
-    if (element.tagName === 'IMG') {
-      element.style.cssText = `
-        width: 320px !important;
-        height: 240px !important;
-        object-fit: contain !important;
-        border: ${borderWeight.value}px solid #333 !important;
-        border-radius: ${borderRadius.value}px !important;
-        padding: ${imageBorderPadding.value}px !important;
-        background: white !important;
-        margin: 5px !important;
-        display: inline-block !important;
-      `
-    } else if (element.tagName === 'DIV') {
-      if (element.textContent && element.textContent.includes('บ้านเลขที่')) {
-        // Title styling
-        element.style.cssText = `
-          text-align: center !important;
-          font-size: ${fontSize.value + 2}px !important;
-          font-weight: ${fontWeight.value} !important;
-          margin-bottom: 20px !important;
-          color: #333 !important;
-          font-family: 'Sarabun', sans-serif !important;
-        `
-      } else {
-        // Container styling
-        element.style.cssText = `
-          display: flex !important;
-          justify-content: center !important;
-          flex-wrap: wrap !important;
-          gap: ${imagePadding.value}px !important;
-          margin-bottom: ${imagePadding.value}px !important;
-        `
-      }
-    } else if (element.tagName === 'BUTTON') {
-      element.style.display = 'none !important'
-    }
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document
+  
+  // Get text content from the report
+  const titleElement = reportContent.querySelector('h3')
+  const titleText = titleElement ? titleElement.textContent : ''
+  
+  // Get images from the report
+  const images = reportContent.querySelectorAll('.report-image')
+  const imageDataList = []
+  for (const img of images) {
+    imageDataList.push(img.src)
   }
   
-  document.body.appendChild(cleanContainer)
+  // Create clean HTML in iframe
+  iframeDoc.open()
+  iframeDoc.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: 'Sarabun', sans-serif;
+          font-size: ${fontSize.value}px;
+          font-weight: ${fontWeight.value};
+          color: #333333;
+          background: #ffffff;
+          padding: 40px 20px 20px 20px;
+          line-height: 1.4;
+        }
+        .title {
+          text-align: center;
+          font-size: ${fontSize.value + 2}px;
+          font-weight: ${fontWeight.value};
+          margin-bottom: 40px;
+          margin-top: 20px;
+          color: #333333;
+        }
+        .image-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: ${imagePadding.value}px;
+        }
+        .image-row {
+          display: flex;
+          justify-content: center;
+          gap: ${imagePadding.value + 15}px;
+          margin-bottom: ${imagePadding.value + 15}px;
+        }
+        .image-item {
+          width: 280px;
+          height: 210px;
+          border: ${borderWeight.value}px solid #333333;
+          border-radius: ${borderRadius.value}px;
+          padding: ${imageBorderPadding.value}px;
+          background: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          box-sizing: border-box;
+        }
+        .image-item img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+          width: auto;
+          height: auto;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="title">${titleText}</div>
+      <div class="image-container" id="images"></div>
+    </body>
+    </html>
+  `)
+  iframeDoc.close()
+  
+  // Add images to iframe
+  const imagesContainer = iframeDoc.getElementById('images')
+  const layout = imageLayout.value
+  
+  layout.rows.forEach(row => {
+    const rowDiv = iframeDoc.createElement('div')
+    rowDiv.className = 'image-row'
+    
+    row.forEach(imageSrc => {
+      const itemDiv = iframeDoc.createElement('div')
+      itemDiv.className = 'image-item'
+      
+      const img = iframeDoc.createElement('img')
+      img.src = imageSrc
+      img.style.display = 'block'
+      
+      itemDiv.appendChild(img)
+      rowDiv.appendChild(itemDiv)
+    })
+    
+    imagesContainer.appendChild(rowDiv)
+  })
+  
+  // Wait for images to load
+  const iframeImages = iframeDoc.querySelectorAll('img')
+  await Promise.all(Array.from(iframeImages).map(img => {
+    return new Promise(resolve => {
+      if (img.complete) {
+        resolve()
+      } else {
+        img.onload = resolve
+        img.onerror = resolve
+      }
+    })
+  }))
   
   try {
     // Wait a bit for styles to apply
     await new Promise(resolve => setTimeout(resolve, 100))
     
-    // Capture the clean HTML as canvas with high quality
-    const canvas = await html2canvas(cleanContainer, {
+    // Capture the iframe content as canvas
+    const canvas = await html2canvas(iframeDoc.body, {
       scale: 2, // Higher resolution
       useCORS: true,
       allowTaint: false,
       backgroundColor: '#ffffff',
-      width: cleanContainer.scrollWidth,
-      height: cleanContainer.scrollHeight,
+      width: 800,
+      height: iframeDoc.body.scrollHeight,
       ignoreElements: (element) => {
         // Skip elements that might cause issues
         return element.tagName === 'BUTTON'
@@ -932,9 +1004,9 @@ const createPDFFromHTML = async () => {
   } finally {
     // Show buttons again
     buttons.forEach(btn => btn.style.display = '')
-    // Remove clean container
-    if (cleanContainer && cleanContainer.parentNode) {
-      document.body.removeChild(cleanContainer)
+    // Remove iframe
+    if (iframe && iframe.parentNode) {
+      document.body.removeChild(iframe)
     }
   }
 }
@@ -1084,8 +1156,8 @@ const exportToWord = async () => {
 /* A4 paper dimensions: 210mm x 297mm */
 /* 40% of A4 width = 84mm ≈ 320px (at 96 DPI) */
 .report-image {
-  width: 320px !important;
-  height: 240px !important;
+  width: 280px !important;
+  height: 210px !important;
   object-fit: contain;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   background: white;
@@ -1100,6 +1172,8 @@ const exportToWord = async () => {
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  gap: v-bind((imagePadding + 15) + 'px');
+  margin-bottom: v-bind((imagePadding + 15) + 'px');
 }
 
 .image-item {
