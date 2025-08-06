@@ -72,6 +72,11 @@ export default defineEventHandler(async (event) => {
 
   } catch (error: any) {
     console.error('Login error:', error)
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    })
     
     if (error.statusCode) {
       throw error
@@ -84,10 +89,26 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Database connection failed'
       })
     }
+
+    // Handle Mongoose validation errors
+    if (error.name === 'ValidationError') {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Validation error: ' + error.message
+      })
+    }
+
+    // Handle MongoServerError
+    if (error.name === 'MongoServerError') {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Database error: ' + error.message
+      })
+    }
     
     throw createError({
       statusCode: 500,
-      statusMessage: 'Internal server error'
+      statusMessage: `Internal server error: ${error.message}`
     })
   }
 })
