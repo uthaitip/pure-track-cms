@@ -57,20 +57,12 @@ export default defineNuxtConfig({
     }
   },
 
-  // Nitro configuration for server-side caching
+  // Nitro configuration for Vercel
   nitro: {
-    compatibilityDate: '2025-08-01',
     preset: 'vercel',
-    storage: {
-      cache: {
-        driver: 'memory',
-        max: 1000
-      }
-    },
-    // Enable compression
-    compressPublicAssets: true,
-    // Minify server code
-    minify: true
+    experimental: {
+      wasm: true
+    }
   },
 
   // Build optimizations

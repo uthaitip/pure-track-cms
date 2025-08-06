@@ -14,7 +14,16 @@ export const connectDB = async () => {
       throw new Error('MONGO_URI is not defined in environment variables')
     }
 
-    await mongoose.connect(mongoUri)
+    // Vercel has connection limits, so we need to handle this carefully
+    const options = {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      bufferCommands: false,
+      bufferMaxEntries: 0
+    }
+
+    await mongoose.connect(mongoUri, options)
     isConnected = true
     console.log('✅ MongoDB connected successfully')
   } catch (error) {
