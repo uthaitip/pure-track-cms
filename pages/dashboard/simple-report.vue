@@ -801,9 +801,9 @@ const printReport = () => {
         }
         
         .report-image {
-          width: 7cm !important;
+          width: 320px !important;
           height: auto !important;
-          max-height: 5.25cm !important;
+          max-height: 240px !important;
           object-fit: contain !important;
           border: ` + borderWeight.value + `px solid #333 !important;
           border-radius: ` + borderRadius.value + `px !important;
@@ -814,6 +814,7 @@ const printReport = () => {
           page-break-before: avoid !important;
           display: inline-block !important;
           vertical-align: top !important;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
         }
         
         .image-container {
@@ -833,6 +834,7 @@ const printReport = () => {
           page-break-after: avoid !important;
           page-break-before: avoid !important;
           width: 100% !important;
+          flex-wrap: nowrap !important;
         }
         
         .image-item {
@@ -858,7 +860,9 @@ const printReport = () => {
         
         .text-xl { 
           font-size: ` + (fontSize.value + 2) + `px !important; 
-          margin-bottom: 1.5rem !important; 
+          margin-bottom: 1.5rem !important;
+          font-weight: ` + fontWeight.value + ` !important;
+          text-align: center !important;
         }
         
         .text-lg { 
@@ -998,14 +1002,15 @@ const exportToWord = async () => {
             display: inline-block;
           }
           .report-image {
-            width: 7.58cm;
+            width: 320px;
             height: auto;
-            max-height: 5.69cm;
+            max-height: 240px;
             object-fit: contain;
             border: ${borderWeight.value}px solid #333;
             border-radius: ${borderRadius.value}px;
             padding: ${imageBorderPadding.value}px;
             background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
           }
         </style>
       </head>
@@ -1086,9 +1091,9 @@ const exportToWord = async () => {
 /* Print styles */
 @media print {
   .report-image {
-    width: 7cm !important;
+    width: 320px !important;
     height: auto !important;
-    max-height: 5.25cm !important;
+    max-height: 240px !important;
     page-break-inside: avoid !important;
     page-break-after: avoid !important;
     page-break-before: avoid !important;
@@ -1099,6 +1104,7 @@ const exportToWord = async () => {
     background: white !important;
     display: inline-block !important;
     vertical-align: top !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
   }
   
   .image-row {
