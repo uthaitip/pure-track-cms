@@ -114,28 +114,28 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ fontSize }}px</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="fontSize = 14; saveFontSize()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-blue-500 text-white': fontSize === 14 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-blue-500 text-white hover:bg-blue-600': fontSize === 14 }"
                 >
                   เล็ก
                 </button>
                 <button
                   @click="fontSize = 16; saveFontSize()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-blue-500 text-white': fontSize === 16 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-blue-500 text-white hover:bg-blue-600': fontSize === 16 }"
                 >
                   กลาง
                 </button>
                 <button
                   @click="fontSize = 18; saveFontSize()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-blue-500 text-white': fontSize === 18 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-blue-500 text-white hover:bg-blue-600': fontSize === 18 }"
                 >
                   ใหญ่
                 </button>
@@ -159,28 +159,28 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ fontWeight }}</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="fontWeight = 300; saveFontWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-purple-500 text-white': fontWeight === 300 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-purple-500 text-white hover:bg-purple-600': fontWeight === 300 }"
                 >
                   บาง
                 </button>
                 <button
                   @click="fontWeight = 400; saveFontWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-purple-500 text-white': fontWeight === 400 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-purple-500 text-white hover:bg-purple-600': fontWeight === 400 }"
                 >
                   ปกติ
                 </button>
                 <button
                   @click="fontWeight = 600; saveFontWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-purple-500 text-white': fontWeight === 600 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-purple-500 text-white hover:bg-purple-600': fontWeight === 600 }"
                 >
                   หนา
                 </button>
@@ -204,28 +204,28 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ imagePadding }}px</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="imagePadding = 5; savePadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-green-500 text-white': imagePadding === 5 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-green-500 text-white hover:bg-green-600': imagePadding === 5 }"
                 >
                   แน่น
                 </button>
                 <button
                   @click="imagePadding = 10; savePadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-green-500 text-white': imagePadding === 10 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-green-500 text-white hover:bg-green-600': imagePadding === 10 }"
                 >
                   กลาง
                 </button>
                 <button
                   @click="imagePadding = 15; savePadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-green-500 text-white': imagePadding === 15 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-green-500 text-white hover:bg-green-600': imagePadding === 15 }"
                 >
                   โล่ง
                 </button>
@@ -249,28 +249,28 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ imageBorderPadding }}px</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="imageBorderPadding = 0; saveImageBorderPadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-teal-500 text-white': imageBorderPadding === 0 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-teal-500 text-white hover:bg-teal-600': imageBorderPadding === 0 }"
                 >
                   ไม่มี
                 </button>
                 <button
                   @click="imageBorderPadding = 8; saveImageBorderPadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-teal-500 text-white': imageBorderPadding === 8 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-teal-500 text-white hover:bg-teal-600': imageBorderPadding === 8 }"
                 >
                   ปกติ
                 </button>
                 <button
                   @click="imageBorderPadding = 16; saveImageBorderPadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-teal-500 text-white': imageBorderPadding === 16 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-teal-500 text-white hover:bg-teal-600': imageBorderPadding === 16 }"
                 >
                   เยอะ
                 </button>
@@ -297,36 +297,36 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ borderWeight }}px</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="borderWeight = 0; saveBorderWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-red-500 text-white': borderWeight === 0 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-red-500 text-white hover:bg-red-600': borderWeight === 0 }"
                 >
                   ไม่มี
                 </button>
                 <button
                   @click="borderWeight = 1; saveBorderWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-red-500 text-white': borderWeight === 1 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-red-500 text-white hover:bg-red-600': borderWeight === 1 }"
                 >
                   บาง
                 </button>
                 <button
                   @click="borderWeight = 2; saveBorderWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-red-500 text-white': borderWeight === 2 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-red-500 text-white hover:bg-red-600': borderWeight === 2 }"
                 >
                   กลาง
                 </button>
                 <button
                   @click="borderWeight = 3; saveBorderWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-red-500 text-white': borderWeight === 3 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-red-500 text-white hover:bg-red-600': borderWeight === 3 }"
                 >
                   หนา
                 </button>
@@ -350,28 +350,28 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ borderRadius }}px</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="borderRadius = 0; saveBorderRadius()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-orange-500 text-white': borderRadius === 0 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-orange-500 text-white hover:bg-orange-600': borderRadius === 0 }"
                 >
                   เหลี่ยม
                 </button>
                 <button
                   @click="borderRadius = 8; saveBorderRadius()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-orange-500 text-white': borderRadius === 8 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-orange-500 text-white hover:bg-orange-600': borderRadius === 8 }"
                 >
                   โค้งเล็ก
                 </button>
                 <button
                   @click="borderRadius = 12; saveBorderRadius()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-orange-500 text-white': borderRadius === 12 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-orange-500 text-white hover:bg-orange-600': borderRadius === 12 }"
                 >
                   โค้งใหญ่
                 </button>
