@@ -813,9 +813,9 @@ const printReport = () => {
         }
         
         .report-image {
-          width: 320px !important;
+          width: 6.5cm !important;
           height: auto !important;
-          max-height: 240px !important;
+          max-height: 4.8cm !important;
           object-fit: contain !important;
           border: ` + borderWeight.value + `px solid #333 !important;
           border-radius: ` + borderRadius.value + `px !important;
@@ -826,7 +826,7 @@ const printReport = () => {
           page-break-before: avoid !important;
           display: inline-block !important;
           vertical-align: top !important;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+          box-shadow: none !important;
         }
         
         .image-container {
@@ -1100,9 +1100,9 @@ const exportToWord = async () => {
 /* Print styles */
 @media print {
   .report-image {
-    width: 320px !important;
+    width: 6.5cm !important;
     height: auto !important;
-    max-height: 240px !important;
+    max-height: 4.8cm !important;
     page-break-inside: avoid !important;
     page-break-after: avoid !important;
     page-break-before: avoid !important;
@@ -1113,7 +1113,7 @@ const exportToWord = async () => {
     background: white !important;
     display: inline-block !important;
     vertical-align: top !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: none !important;
   }
   
   .image-row {
