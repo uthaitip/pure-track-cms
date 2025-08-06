@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import { ensureModelsLoaded } from './models'
 
 let isConnected = false
 
@@ -15,8 +14,13 @@ export const connectDB = async () => {
       throw new Error('MONGO_URI is not defined in environment variables')
     }
 
-    // Ensure all models are loaded before connecting
-    ensureModelsLoaded()
+    // Force load all models before connecting
+    await import('../models/Permission')
+    await import('../models/Role') 
+    await import('../models/User')
+    await import('../models/Menu')
+    
+    console.log('✅ Models loaded:', Object.keys(mongoose.models))
 
     // Vercel-optimized MongoDB connection options
     const options = {
