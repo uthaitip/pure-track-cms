@@ -14,13 +14,11 @@ export const connectDB = async () => {
       throw new Error('MONGO_URI is not defined in environment variables')
     }
 
-    // Vercel has connection limits, so we need to handle this carefully
+    // Vercel-optimized MongoDB connection options
     const options = {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-      bufferCommands: false,
-      bufferMaxEntries: 0
+      socketTimeoutMS: 45000
     }
 
     await mongoose.connect(mongoUri, options)
