@@ -1,6 +1,7 @@
 import { connectDB } from '../../utils/db'
 import { User } from '../../models/User'
 import { Role } from '../../models/Role'
+import { Permission } from '../../models/Permission'
 import { signJWT } from '../../utils/jwt'
 
 interface RegisterRequest {
