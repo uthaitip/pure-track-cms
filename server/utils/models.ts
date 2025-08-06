@@ -1,19 +1,19 @@
-// Central model registry to ensure all models are properly registered
-import { Permission } from '../models/Permission'
-import { Role } from '../models/Role'
-import { User } from '../models/User'
-import { Menu } from '../models/Menu'
+import mongoose from 'mongoose'
 
-// Export all models to ensure they're registered when this file is imported
-export {
-  Permission,
-  Role,
-  User,
-  Menu
-}
+// Import all model files to ensure schemas are registered
+import '../models/Permission'
+import '../models/Role'
+import '../models/User'  
+import '../models/Menu'
 
 // Utility function to ensure all models are loaded
 export const ensureModelsLoaded = () => {
-  // Just importing this file will register all models
+  console.log('Models loaded, registered models:', Object.keys(mongoose.models))
   return true
 }
+
+// Re-export models for convenience
+export { Permission } from '../models/Permission'
+export { Role } from '../models/Role'
+export { User } from '../models/User'
+export { Menu } from '../models/Menu'

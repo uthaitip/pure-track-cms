@@ -1,8 +1,5 @@
 import { connectDB } from '../utils/db'
-import { Permission } from '../models/Permission'
-import { Role } from '../models/Role'
-import { User } from '../models/User'
-import { Menu } from '../models/Menu'
+import { Permission, Role, User, Menu } from '../utils/models'
 
 export default defineEventHandler(async (event) => {
   try {
