@@ -1,8 +1,6 @@
 import { authenticateToken } from '../../utils/auth'
 import { connectDB } from '../../utils/db'
 import { User } from '../../models/User'
-import { Role } from '../../models/Role'
-import { Permission } from '../../models/Permission'
 
 export default defineEventHandler(async (event) => {
   try {

@@ -1,8 +1,6 @@
 import type { H3Event } from 'h3'
 import { verifyJWT, extractTokenFromHeader, type JWTPayload } from './jwt'
 import { User } from '../models/User'
-import { Role } from '../models/Role'
-import { Permission } from '../models/Permission'
 import { connectDB } from './db'
 
 export interface AuthenticatedUser extends JWTPayload {

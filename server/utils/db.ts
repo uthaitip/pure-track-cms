@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { ensureModelsLoaded } from './models'
 
 let isConnected = false
 
@@ -13,6 +14,9 @@ export const connectDB = async () => {
     if (!mongoUri) {
       throw new Error('MONGO_URI is not defined in environment variables')
     }
+
+    // Ensure all models are loaded before connecting
+    ensureModelsLoaded()
 
     // Vercel-optimized MongoDB connection options
     const options = {
