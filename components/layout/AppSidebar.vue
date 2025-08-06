@@ -92,7 +92,14 @@ const { menus, fetchMenus, loading, error } = useMenu()
 const openSubmenus = ref<string[]>([])
 
 const userMenus = computed(() => {
-  if (!user.value?.role?.name) return []
+  if (!user.value?.role?.name) {
+    console.log('No user role found')
+    return []
+  }
+
+  console.log('User role:', user.value.role.name)
+  console.log('Available menus:', menus.value)
+  console.log('Menus for user:', menus.value.filter(menu => menu.roles.includes(user.value!.role.name)))
 
   return menus.value.filter(menu =>
     menu.roles.includes(user.value!.role.name) && menu.isActive
