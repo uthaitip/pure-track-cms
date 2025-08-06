@@ -793,7 +793,24 @@ const createPDFFromHTML = async () => {
   const buttons = reportContent.querySelectorAll('button')
   buttons.forEach(btn => btn.style.display = 'none')
   
+  // Create temporary style to override problematic CSS
+  const tempStyle = document.createElement('style')
+  tempStyle.textContent = `
+    #report-content * {
+      background-color: white !important;
+      border-color: #333333 !important;
+      color: #333333 !important;
+    }
+    #report-content .report-image {
+      background-color: white !important;
+    }
+  `
+  document.head.appendChild(tempStyle)
+  
   try {
+    // Wait a bit for styles to apply
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
     // Capture the HTML as canvas with high quality
     const canvas = await html2canvas(reportContent, {
       scale: 2, // Higher resolution
@@ -801,7 +818,11 @@ const createPDFFromHTML = async () => {
       allowTaint: false,
       backgroundColor: '#ffffff',
       width: reportContent.scrollWidth,
-      height: reportContent.scrollHeight
+      height: reportContent.scrollHeight,
+      ignoreElements: (element) => {
+        // Skip elements that might cause issues
+        return element.tagName === 'BUTTON'
+      }
     })
     
     // Create PDF
@@ -857,6 +878,10 @@ const createPDFFromHTML = async () => {
   } finally {
     // Show buttons again
     buttons.forEach(btn => btn.style.display = '')
+    // Remove temporary style
+    if (tempStyle && tempStyle.parentNode) {
+      document.head.removeChild(tempStyle)
+    }
   }
 }
 
