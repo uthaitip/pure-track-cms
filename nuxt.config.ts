@@ -60,6 +60,7 @@ export default defineNuxtConfig({
   // Nitro configuration for server-side caching
   nitro: {
     compatibilityDate: '2025-08-01',
+    preset: 'vercel',
     storage: {
       cache: {
         driver: 'memory',
