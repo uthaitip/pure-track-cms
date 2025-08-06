@@ -473,15 +473,15 @@
           <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center" :style="{ fontSize: fontSize + 'px', fontWeight: fontWeight }">{{  form.name }}  {{ form.lastName }} บ้านเลขที่ {{ form.houseNumber }} ตำบล {{ form.tambon }} อำเภอ {{ form.amphur }} จังหวัด {{ form.province }}</h3>
           
           <!-- Image Layout Logic -->
-          <div class="image-container">
-            <div v-for="(row, rowIndex) in imageLayout.rows" :key="rowIndex" 
+          <div class="image-container" :key="`images-${images.length}`">
+            <div v-for="(row, rowIndex) in imageLayout.rows" :key="`row-${rowIndex}-${row.length}`" 
                  class="image-row" 
                  :class="{ 'justify-center': row.length === 1 }"
                  :style="{ 
                    gap: (imagePadding + 10) + 'px',
                    marginBottom: (imagePadding + 15) + 'px'
                  }">
-              <div v-for="(image, imgIndex) in row" :key="imgIndex" 
+              <div v-for="(image, imgIndex) in row" :key="`img-${rowIndex}-${imgIndex}-${image.slice(-20)}`" 
                    class="image-item">
                 <img :src="image" 
                      :alt="`Image ${getImageNumber(rowIndex, imgIndex)}`" 
@@ -523,7 +523,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 
 definePageMeta({
   layout: 'dashboard',
@@ -666,32 +666,35 @@ onMounted(() => {
 
 // Computed property to arrange images based on count
 const imageLayout = computed(() => {
-  const count = images.value.length
+  const currentImages = [...images.value] // Create reactive copy
+  const count = currentImages.length
+  
+  console.log('Image layout recalculating, count:', count) // Debug log
   
   if (count === 0) return { rows: [] }
-  if (count === 1) return { rows: [[images.value[0]]] }
-  if (count === 2) return { rows: [images.value] }
+  if (count === 1) return { rows: [[currentImages[0]]] }
+  if (count === 2) return { rows: [currentImages] }
   
   // สำหรับ 3 รูปขึ้นไป: แถวแรกแสดง 1 รูป ถ้าเป็นเลขคี่
   const rows = []
   
   if (count % 2 === 1) {
     // เลขคี่: แถวแรก 1 รูป, แถวถัดไปคู่ละ 2 รูป
-    rows.push([images.value[0]]) // แถวแรก 1 รูป
+    rows.push([currentImages[0]]) // แถวแรก 1 รูป
     
     for (let i = 1; i < count; i += 2) {
-      const row = [images.value[i]]
+      const row = [currentImages[i]]
       if (i + 1 < count) {
-        row.push(images.value[i + 1])
+        row.push(currentImages[i + 1])
       }
       rows.push(row)
     }
   } else {
     // เลขคู่: แบ่งเป็นคู่ๆ
     for (let i = 0; i < count; i += 2) {
-      const row = [images.value[i]]
+      const row = [currentImages[i]]
       if (i + 1 < count) {
-        row.push(images.value[i + 1])
+        row.push(currentImages[i + 1])
       }
       rows.push(row)
     }
@@ -763,12 +766,16 @@ const getImageNumber = (rowIndex, imgIndex) => {
 // Handle form submission
 const handleSubmit = () => {
   showReport.value = true
-  // Scroll to report section
-  setTimeout(() => {
-    document.getElementById('report-content')?.scrollIntoView({ 
-      behavior: 'smooth' 
-    })
-  }, 100)
+  
+  // Force reactivity update for images
+  nextTick(() => {
+    // Scroll to report section
+    setTimeout(() => {
+      document.getElementById('report-content')?.scrollIntoView({ 
+        behavior: 'smooth' 
+      })
+    }, 100)
+  })
 }
 
 // Print functionality
