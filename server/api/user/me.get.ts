@@ -1,81 +1,32 @@
 import { authenticateToken } from '../../utils/auth'
-
-// Same mock users as in login
-const mockUsers = [
-  {
-    _id: '64a1b1234567890123456789',
-    email: 'admin@example.com',
-    firstName: 'Admin',
-    lastName: 'User',
-    role: {
-      name: 'admin',
-      permissions: [
-        { name: 'view_dashboard' },
-        { name: 'manage_users' },
-        { name: 'manage_system' },
-        { name: 'view_reports' },
-        { name: 'manage_roles' }
-      ]
-    },
-    isActive: true
-  },
-  {
-    _id: '64a1b1234567890123456790',
-    email: 'hr@example.com',
-    firstName: 'HR',
-    lastName: 'Manager',
-    role: {
-      name: 'hr',
-      permissions: [
-        { name: 'view_dashboard' },
-        { name: 'manage_hr' },
-        { name: 'view_users' },
-        { name: 'create_user' }
-      ]
-    },
-    isActive: true
-  },
-  {
-    _id: '64a1b1234567890123456791',
-    email: 'accountant@example.com',
-    firstName: 'Finance',
-    lastName: 'Manager',
-    role: {
-      name: 'accountant',
-      permissions: [
-        { name: 'view_dashboard' },
-        { name: 'view_reports' },
-        { name: 'view_analytics' }
-      ]
-    },
-    isActive: true
-  },
-  {
-    _id: '64a1b1234567890123456792',
-    email: 'employee@example.com',
-    firstName: 'John',
-    lastName: 'Employee',
-    role: {
-      name: 'employee',
-      permissions: [
-        { name: 'view_dashboard' }
-      ]
-    },
-    isActive: true
-  }
-]
+import { connectDB } from '../../utils/db'
+import { User } from '../../models/User'
+import { Role } from '../../models/Role'
+import { Permission } from '../../models/Permission'
 
 export default defineEventHandler(async (event) => {
   try {
     const decoded = await authenticateToken(event)
     
-    // Find user by ID from token
-    const user = mockUsers.find(u => u._id === decoded.userId)
+    // Connect to MongoDB
+    await connectDB()
     
-    if (!user) {
+    // Find user by ID from token with populated role and permissions
+    const user = await User.findById(decoded.userId)
+      .populate({
+        path: 'role',
+        populate: {
+          path: 'permissions',
+          model: 'Permission'
+        }
+      })
+      .select('-password')
+      .lean()
+    
+    if (!user || !user.isActive) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'User not found'
+        statusMessage: 'User not found or inactive'
       })
     }
 
@@ -96,7 +47,7 @@ export default defineEventHandler(async (event) => {
     
     throw createError({
       statusCode: 500,
-      statusMessage: 'Internal server error'
+      statusMessage: `Internal server error: ${error.message}`
     })
   }
 })
