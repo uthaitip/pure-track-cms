@@ -59,10 +59,7 @@ export default defineNuxtConfig({
 
   // Nitro configuration for Vercel
   nitro: {
-    preset: 'vercel',
-    experimental: {
-      wasm: true
-    }
+    preset: 'vercel'
   },
 
   // Build optimizations
