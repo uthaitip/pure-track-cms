@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Test</title>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap');
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body>
+    <h1>ทดสอบ PDF Generation</h1>
+    <p>นี่คือการทดสอบตัวอักษรไทย และ font Sarabun</p>
+    <div id="test-content">
+        <h2>มานี มะนาว บ้านเลขที่ 123 ตำบลลาดมะขาม อำเภอเมือง จังหวัดระยอง</h2>
+    </div>
+
+    <button onclick="testPDF()">ทดสอบ PDF</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        async function testPDF() {
+            try {
+                const content = document.getElementById('test-content');
+                
+                // Create clean container
+                const cleanContainer = document.createElement('div');
+                cleanContainer.style.cssText = `
+                    position: fixed;
+                    top: -9999px;
+                    left: -9999px;
+                    width: 800px;
+                    background: white;
+                    font-family: 'Sarabun', sans-serif;
+                    font-size: 16px;
+                    color: #333;
+                    padding: 20px;
+                `;
+                
+                cleanContainer.innerHTML = content.innerHTML;
+                
+                // Remove all classes
+                const allElements = cleanContainer.getElementsByTagName('*');
+                for (let i = 0; i < allElements.length; i++) {
+                    allElements[i].removeAttribute('class');
+                    allElements[i].style.cssText = 'color: #333 !important; font-family: Sarabun !important;';
+                }
+                
+                document.body.appendChild(cleanContainer);
+                
+                const canvas = await html2canvas(cleanContainer, {
+                    scale: 2,
+                    backgroundColor: '#ffffff'
+                });
+                
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF();
+                
+                const imgData = canvas.toDataURL('image/png', 1.0);
+                pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+                pdf.save('test-thai.pdf');
+                
+                document.body.removeChild(cleanContainer);
+                console.log('PDF created successfully!');
+            } catch (error) {
+                console.error('PDF error:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -524,7 +524,6 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
-import jsPDF from 'jspdf'
 
 definePageMeta({
   layout: 'dashboard',

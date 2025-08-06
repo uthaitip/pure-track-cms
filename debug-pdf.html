@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug PDF Test</title>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap');
+        
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            padding: 20px;
+        }
+        
+        #test-content {
+            background: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
+        
+        .console-log {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug PDF Generation Test</h1>
+    
+    <div id="test-content">
+        <h2>มานี มะนาว บ้านเลขที่ 123 ตำบลลาดมะขาม อำเภอเมือง จังหวัดระยอง</h2>
+        <div style="display: flex; gap: 10px; margin: 20px 0;">
+            <div style="width: 100px; height: 80px; background: #e0e0e0; border: 1px solid #333;">รูปภาพ 1</div>
+            <div style="width: 100px; height: 80px; background: #e0e0e0; border: 1px solid #333;">รูปภาพ 2</div>
+        </div>
+    </div>
+
+    <button onclick="testPDFStep1()" style="margin: 5px; padding: 10px;">Step 1: Load Libraries</button>
+    <button onclick="testPDFStep2()" style="margin: 5px; padding: 10px;">Step 2: Create Clean Container</button>
+    <button onclick="testPDFStep3()" style="margin: 5px; padding: 10px;">Step 3: Capture with html2canvas</button>
+    <button onclick="testPDFStep4()" style="margin: 5px; padding: 10px;">Step 4: Generate PDF</button>
+    <button onclick="testPDFAll()" style="margin: 5px; padding: 10px; background: #4CAF50; color: white;">🎯 Test All Steps</button>
+
+    <div id="console-log" class="console-log">Console output will appear here...</div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('console-log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.textContent += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        let html2canvas = null;
+        let jsPDF = null;
+        let cleanContainer = null;
+        let canvas = null;
+
+        async function testPDFStep1() {
+            try {
+                log('🔄 Loading html2canvas...');
+                if (!window.html2canvas) {
+                    const script1 = document.createElement('script');
+                    script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                    document.head.appendChild(script1);
+                    await new Promise(resolve => script1.onload = resolve);
+                }
+                html2canvas = window.html2canvas;
+                log('✅ html2canvas loaded successfully');
+
+                log('🔄 Loading jsPDF...');
+                if (!window.jspdf) {
+                    const script2 = document.createElement('script');
+                    script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                    document.head.appendChild(script2);
+                    await new Promise(resolve => script2.onload = resolve);
+                }
+                jsPDF = window.jspdf.jsPDF;
+                log('✅ jsPDF loaded successfully');
+
+                log('✅ Step 1 completed - Libraries loaded');
+            } catch (error) {
+                log('❌ Step 1 failed: ' + error.message);
+            }
+        }
+
+        async function testPDFStep2() {
+            try {
+                log('🔄 Creating clean container...');
+                const content = document.getElementById('test-content');
+                
+                // Create clean container
+                cleanContainer = document.createElement('div');
+                cleanContainer.style.cssText = `
+                    position: fixed;
+                    top: -9999px;
+                    left: -9999px;
+                    width: 800px;
+                    background: white;
+                    font-family: 'Sarabun', sans-serif;
+                    font-size: 16px;
+                    color: #333;
+                    padding: 20px;
+                    z-index: -1;
+                `;
+                
+                cleanContainer.innerHTML = content.innerHTML;
+                
+                // Remove all classes and apply safe styles
+                const allElements = cleanContainer.getElementsByTagName('*');
+                for (let i = 0; i < allElements.length; i++) {
+                    const element = allElements[i];
+                    element.removeAttribute('class');
+                    element.style.cssText = 'color: #333 !important; font-family: Sarabun, sans-serif !important; background: transparent !important;';
+                }
+                
+                document.body.appendChild(cleanContainer);
+                log('✅ Step 2 completed - Clean container created');
+            } catch (error) {
+                log('❌ Step 2 failed: ' + error.message);
+            }
+        }
+
+        async function testPDFStep3() {
+            try {
+                if (!html2canvas || !cleanContainer) {
+                    log('❌ Need to complete previous steps first');
+                    return;
+                }
+
+                log('🔄 Capturing with html2canvas...');
+                canvas = await html2canvas(cleanContainer, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: false,
+                    backgroundColor: '#ffffff',
+                    logging: true
+                });
+                
+                log('✅ Step 3 completed - Canvas captured: ' + canvas.width + 'x' + canvas.height);
+                
+                // Show preview
+                const preview = document.createElement('div');
+                preview.innerHTML = '<h3>Canvas Preview:</h3>';
+                preview.appendChild(canvas);
+                canvas.style.maxWidth = '400px';
+                canvas.style.border = '1px solid #ccc';
+                document.body.appendChild(preview);
+                
+            } catch (error) {
+                log('❌ Step 3 failed: ' + error.message);
+            }
+        }
+
+        async function testPDFStep4() {
+            try {
+                if (!jsPDF || !canvas) {
+                    log('❌ Need to complete previous steps first');
+                    return;
+                }
+
+                log('🔄 Generating PDF...');
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+                
+                const scale = pageWidth / (canvasWidth / 2);
+                const scaledHeight = (canvasHeight / 2) * scale;
+                
+                const imgData = canvas.toDataURL('image/png', 1.0);
+                pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, Math.min(scaledHeight, pageHeight));
+                
+                pdf.save('debug-test-thai.pdf');
+                log('✅ Step 4 completed - PDF generated and saved');
+                
+                // Cleanup
+                if (cleanContainer && cleanContainer.parentNode) {
+                    document.body.removeChild(cleanContainer);
+                }
+                
+            } catch (error) {
+                log('❌ Step 4 failed: ' + error.message);
+            }
+        }
+
+        async function testPDFAll() {
+            log('🎯 Starting complete PDF test...');
+            await testPDFStep1();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testPDFStep2();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testPDFStep3();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testPDFStep4();
+            log('🎉 Complete test finished!');
+        }
+
+        // Capture all console errors
+        window.addEventListener('error', function(e) {
+            log('❌ JavaScript Error: ' + e.error.message);
+        });
+
+        log('🚀 Debug page loaded. Ready for testing!');
+    </script>
+</body>
+</html>
