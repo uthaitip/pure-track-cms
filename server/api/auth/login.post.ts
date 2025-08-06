@@ -1,6 +1,8 @@
 import { signJWT } from '../../utils/jwt'
 import { connectDB } from '../../utils/db'
 import { User } from '../../models/User'
+import { Permission } from '../../models/Permission'
+import { Role } from '../../models/Role'
 
 export default defineEventHandler(async (event) => {
   try {
