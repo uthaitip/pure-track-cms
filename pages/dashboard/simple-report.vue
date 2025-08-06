@@ -476,9 +476,21 @@
           <div class="image-container">
             <div v-for="(row, rowIndex) in imageLayout.rows" :key="rowIndex" 
                  class="image-row" 
-                 :class="{ 'justify-center': row.length === 1, 'mb-4': rowIndex < imageLayout.rows.length - 1 }">
-              <div v-for="(image, imgIndex) in row" :key="imgIndex" class="image-item">
-                <img :src="image" :alt="`Image ${getImageNumber(rowIndex, imgIndex)}`" class="report-image" />
+                 :class="{ 'justify-center': row.length === 1 }"
+                 :style="{ 
+                   gap: (imagePadding + 10) + 'px',
+                   marginBottom: (imagePadding + 15) + 'px'
+                 }">
+              <div v-for="(image, imgIndex) in row" :key="imgIndex" 
+                   class="image-item">
+                <img :src="image" 
+                     :alt="`Image ${getImageNumber(rowIndex, imgIndex)}`" 
+                     class="report-image"
+                     :style="{
+                       border: borderWeight + 'px solid #333',
+                       borderRadius: borderRadius + 'px',
+                       padding: imageBorderPadding + 'px'
+                     }" />
               </div>
             </div>
           </div>
@@ -1066,9 +1078,6 @@ const exportToWord = async () => {
   width: 320px;
   height: 240px;
   object-fit: contain;
-  border: v-bind(borderWeight + 'px solid #333');
-  border-radius: v-bind(borderRadius + 'px');
-  padding: v-bind(imageBorderPadding + 'px');
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   background: white;
 }
@@ -1081,8 +1090,7 @@ const exportToWord = async () => {
 .image-row {
   display: flex;
   justify-content: center;
-  gap: v-bind((imagePadding + 10) + 'px');
-  margin-bottom: v-bind((imagePadding + 15) + 'px');
+  align-items: flex-start;
 }
 
 .image-item {
