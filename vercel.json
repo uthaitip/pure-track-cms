@@ -1,9 +1,1 @@
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": ".output/public",
-  "functions": {
-    ".output/server/**/*.mjs": {
-      "maxDuration": 30
-    }
-  }
-}
+{}
