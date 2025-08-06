@@ -780,22 +780,87 @@ const handleSubmit = () => {
   })
 }
 
-// Function to load Sarabun font for jsPDF
-const loadSarabunFont = async (pdf) => {
+// Function to create PDF with HTML2Canvas for better quality
+const createPDFFromHTML = async () => {
+  // Dynamic import html2canvas
+  const html2canvas = (await import('html2canvas')).default
+  const jsPDF = (await import('jspdf')).default
+  
+  const reportContent = document.getElementById('report-content')
+  if (!reportContent) return null
+  
+  // Hide buttons before capturing
+  const buttons = reportContent.querySelectorAll('button')
+  buttons.forEach(btn => btn.style.display = 'none')
+  
   try {
-    // Add the Sarabun font from Google Fonts API
-    const response = await fetch('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap')
+    // Capture the HTML as canvas with high quality
+    const canvas = await html2canvas(reportContent, {
+      scale: 2, // Higher resolution
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: '#ffffff',
+      width: reportContent.scrollWidth,
+      height: reportContent.scrollHeight
+    })
     
-    // For now, use default fonts but configure for Thai support
-    // Note: jsPDF has limited Thai font support, this is a workaround
-    return true
-  } catch (error) {
-    console.warn('Could not load Sarabun font, using default font')
-    return false
+    // Create PDF
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    })
+    
+    // Calculate dimensions to fit A4
+    const pageWidth = pdf.internal.pageSize.getWidth()
+    const pageHeight = pdf.internal.pageSize.getHeight()
+    const canvasWidth = canvas.width
+    const canvasHeight = canvas.height
+    
+    // Calculate scaling to fit page width
+    const scale = pageWidth / (canvasWidth / 2) // Divide by 2 because we used scale: 2
+    const scaledHeight = (canvasHeight / 2) * scale
+    
+    // Add image to PDF
+    const imgData = canvas.toDataURL('image/png', 1.0)
+    
+    if (scaledHeight <= pageHeight) {
+      // Fits on one page
+      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, scaledHeight)
+    } else {
+      // Need multiple pages
+      let yOffset = 0
+      const pageRatio = pageHeight / scaledHeight
+      const sliceHeight = canvasHeight * pageRatio
+      
+      while (yOffset < canvasHeight) {
+        const sliceCanvas = document.createElement('canvas')
+        const sliceCtx = sliceCanvas.getContext('2d')
+        const remainingHeight = Math.min(sliceHeight, canvasHeight - yOffset)
+        
+        sliceCanvas.width = canvasWidth
+        sliceCanvas.height = remainingHeight
+        
+        // Draw slice
+        sliceCtx.drawImage(canvas, 0, yOffset, canvasWidth, remainingHeight, 0, 0, canvasWidth, remainingHeight)
+        
+        const sliceData = sliceCanvas.toDataURL('image/png', 1.0)
+        
+        if (yOffset > 0) pdf.addPage()
+        pdf.addImage(sliceData, 'PNG', 0, 0, pageWidth, pageHeight)
+        
+        yOffset += sliceHeight
+      }
+    }
+    
+    return pdf
+  } finally {
+    // Show buttons again
+    buttons.forEach(btn => btn.style.display = '')
   }
 }
 
-// Direct PDF generation functionality using jsPDF
+// Direct PDF generation using HTML2Canvas for perfect quality
 const printReport = async () => {
   if (images.value.length === 0) {
     alert('กรุณาเลือกรูปภาพก่อนดาวน์โหลด')
@@ -803,118 +868,11 @@ const printReport = async () => {
   }
 
   try {
-    // Create new jsPDF instance
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
-    })
-    
-    // Load font (though jsPDF has limited Thai support)
-    await loadSarabunFont(pdf)
-    
-    // Set font size based on user settings
-    const pdfFontSize = fontSize.value * 0.75 // Convert px to pt approximately
-    pdf.setFontSize(pdfFontSize)
-    
-    // Add title text
-    const title = `${form.value.name} ${form.value.lastName} บ้านเลขที่ ${form.value.houseNumber} ตำบล${form.value.tambon} อำเภอ${form.value.amphur} จังหวัด${form.value.province}`
-    
-    // Calculate text position (centered)
-    const pageWidth = pdf.internal.pageSize.getWidth()
-    const textWidth = pdf.getTextWidth(title)
-    const textX = (pageWidth - textWidth) / 2
-    
-    // Add title
-    pdf.text(title, textX, 20)
-    
-    // Add images to PDF
-    let yPosition = 40 // Start position for images
-    const imageWidth = 65 // mm
-    const imageHeight = 48 // mm
-    const spacing = imagePadding.value * 0.5 // Convert px to mm
-    
-    // Process images row by row
-    for (let rowIndex = 0; rowIndex < imageLayout.value.rows.length; rowIndex++) {
-      const row = imageLayout.value.rows[rowIndex]
-      const imagesInRow = row.length
-      
-      // Calculate starting X position to center the row
-      let startX
-      if (imagesInRow === 1) {
-        startX = (pageWidth - imageWidth) / 2
-      } else {
-        const totalRowWidth = (imagesInRow * imageWidth) + ((imagesInRow - 1) * spacing)
-        startX = (pageWidth - totalRowWidth) / 2
-      }
-      
-      // Add each image in the row
-      for (let imgIndex = 0; imgIndex < row.length; imgIndex++) {
-        const imageData = row[imgIndex]
-        const xPosition = startX + (imgIndex * (imageWidth + spacing))
-        
-        try {
-          // Convert image to format that jsPDF can handle
-          const img = new Image()
-          img.crossOrigin = 'anonymous'
-          
-          await new Promise((resolve, reject) => {
-            img.onload = () => {
-              try {
-                // Create canvas to convert image
-                const canvas = document.createElement('canvas')
-                const ctx = canvas.getContext('2d')
-                canvas.width = img.width
-                canvas.height = img.height
-                
-                // Draw image on canvas
-                ctx.drawImage(img, 0, 0)
-                
-                // Get image data as JPEG
-                const imgData = canvas.toDataURL('image/jpeg', 0.8)
-                
-                // Add image to PDF with border styling
-                pdf.addImage(imgData, 'JPEG', 
-                  xPosition + (imageBorderPadding.value * 0.1), 
-                  yPosition + (imageBorderPadding.value * 0.1), 
-                  imageWidth - (imageBorderPadding.value * 0.2), 
-                  imageHeight - (imageBorderPadding.value * 0.2)
-                )
-                
-                // Add border if specified
-                if (borderWeight.value > 0) {
-                  pdf.setLineWidth(borderWeight.value * 0.3)
-                  pdf.rect(xPosition, yPosition, imageWidth, imageHeight)
-                }
-                
-                resolve()
-              } catch (error) {
-                reject(error)
-              }
-            }
-            
-            img.onerror = reject
-            img.src = imageData
-          })
-        } catch (error) {
-          console.error('Error adding image to PDF:', error)
-        }
-      }
-      
-      // Move to next row
-      yPosition += imageHeight + spacing + 10
-      
-      // Check if we need a new page
-      if (yPosition > 250) { // Leave some margin at bottom
-        pdf.addPage()
-        yPosition = 20
-      }
+    const pdf = await createPDFFromHTML()
+    if (pdf) {
+      const filename = `${form.value.houseNumber}-${form.value.name}-${form.value.lastName}.pdf`
+      pdf.save(filename)
     }
-    
-    // Save the PDF
-    const filename = `${form.value.houseNumber}-${form.value.name}-${form.value.lastName}.pdf`
-    pdf.save(filename)
-    
   } catch (error) {
     console.error('Error creating PDF:', error)
     alert('เกิดข้อผิดพลาดในการสร้าง PDF: ' + error.message)
