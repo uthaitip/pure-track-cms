@@ -59,7 +59,7 @@ export default defineNuxtConfig({
 
   // Nitro configuration for Vercel
   nitro: {
-    preset: 'vercel'
+    preset: 'vercel-edge'
   },
 
   // Build optimizations
