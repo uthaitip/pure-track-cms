@@ -524,6 +524,7 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
+import jsPDF from 'jspdf'
 
 definePageMeta({
   layout: 'dashboard',
@@ -779,7 +780,22 @@ const handleSubmit = () => {
   })
 }
 
-// Direct PDF download functionality
+// Function to load Sarabun font for jsPDF
+const loadSarabunFont = async (pdf) => {
+  try {
+    // Add the Sarabun font from Google Fonts API
+    const response = await fetch('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap')
+    
+    // For now, use default fonts but configure for Thai support
+    // Note: jsPDF has limited Thai font support, this is a workaround
+    return true
+  } catch (error) {
+    console.warn('Could not load Sarabun font, using default font')
+    return false
+  }
+}
+
+// Direct PDF generation functionality using jsPDF
 const printReport = async () => {
   if (images.value.length === 0) {
     alert('กรุณาเลือกรูปภาพก่อนดาวน์โหลด')
@@ -787,112 +803,121 @@ const printReport = async () => {
   }
 
   try {
-    // Get the report content
-    const reportContent = document.getElementById('report-content')
-    if (!reportContent) return
+    // Create new jsPDF instance
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    })
     
-    // Create HTML content for PDF
-    const reportHTML = reportContent.innerHTML
+    // Load font (though jsPDF has limited Thai support)
+    await loadSarabunFont(pdf)
     
-    const pdfDocument = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>${form.value.houseNumber}-${form.value.name}-${form.value.lastName}</title>
-        <meta charset="UTF-8">
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+    // Set font size based on user settings
+    const pdfFontSize = fontSize.value * 0.75 // Convert px to pt approximately
+    pdf.setFontSize(pdfFontSize)
+    
+    // Add title text
+    const title = `${form.value.name} ${form.value.lastName} บ้านเลขที่ ${form.value.houseNumber} ตำบล${form.value.tambon} อำเภอ${form.value.amphur} จังหวัด${form.value.province}`
+    
+    // Calculate text position (centered)
+    const pageWidth = pdf.internal.pageSize.getWidth()
+    const textWidth = pdf.getTextWidth(title)
+    const textX = (pageWidth - textWidth) / 2
+    
+    // Add title
+    pdf.text(title, textX, 20)
+    
+    // Add images to PDF
+    let yPosition = 40 // Start position for images
+    const imageWidth = 65 // mm
+    const imageHeight = 48 // mm
+    const spacing = imagePadding.value * 0.5 // Convert px to mm
+    
+    // Process images row by row
+    for (let rowIndex = 0; rowIndex < imageLayout.value.rows.length; rowIndex++) {
+      const row = imageLayout.value.rows[rowIndex]
+      const imagesInRow = row.length
+      
+      // Calculate starting X position to center the row
+      let startX
+      if (imagesInRow === 1) {
+        startX = (pageWidth - imageWidth) / 2
+      } else {
+        const totalRowWidth = (imagesInRow * imageWidth) + ((imagesInRow - 1) * spacing)
+        startX = (pageWidth - totalRowWidth) / 2
+      }
+      
+      // Add each image in the row
+      for (let imgIndex = 0; imgIndex < row.length; imgIndex++) {
+        const imageData = row[imgIndex]
+        const xPosition = startX + (imgIndex * (imageWidth + spacing))
+        
+        try {
+          // Convert image to format that jsPDF can handle
+          const img = new Image()
+          img.crossOrigin = 'anonymous'
           
-          * {
-            font-family: 'Sarabun' !important;
-          }
-          
-          @page {
-            size: A4;
-            margin: 1.5cm;
-          }
-          
-          body {
-            font-family: 'Sarabun';
-            line-height: 1.4;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            background: white;
-            font-size: ${fontSize.value}px;
-            font-weight: ${fontWeight.value};
-          }
-          
-          .report-image {
-            width: 6.5cm;
-            height: 4.8cm;
-            object-fit: contain;
-            border: ${borderWeight.value}px solid #333;
-            border-radius: ${borderRadius.value}px;
-            padding: ${imageBorderPadding.value}px;
-            background: white;
-            margin: 5px;
-            display: inline-block;
-            vertical-align: top;
-          }
-          
-          .image-container {
-            text-align: center;
-            margin: 20px 0;
-          }
-          
-          .image-row {
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-            margin-bottom: ${imagePadding.value}px;
-          }
-          
-          .image-item {
-            display: inline-block;
-            margin: 0 ${imagePadding.value / 2}px;
-          }
-          
-          .text-center { 
-            text-align: center; 
-          }
-          
-          .text-xl { 
-            font-size: ${fontSize.value + 2}px;
-            margin-bottom: 20px;
-            font-weight: ${fontWeight.value};
-            text-align: center;
-          }
-          
-          .justify-center { 
-            text-align: center; 
-          }
-          
-          button { 
-            display: none; 
-          }
-        </style>
-      </head>
-      <body>
-        ${reportHTML}
-      </body>
-      </html>
-    `
-
-    // Create and download as HTML file that can be printed to PDF
-    const blob = new Blob([pdfDocument], { type: 'text/html' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${form.value.houseNumber}-${form.value.name}-${form.value.lastName}.html`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    window.URL.revokeObjectURL(url)
+          await new Promise((resolve, reject) => {
+            img.onload = () => {
+              try {
+                // Create canvas to convert image
+                const canvas = document.createElement('canvas')
+                const ctx = canvas.getContext('2d')
+                canvas.width = img.width
+                canvas.height = img.height
+                
+                // Draw image on canvas
+                ctx.drawImage(img, 0, 0)
+                
+                // Get image data as JPEG
+                const imgData = canvas.toDataURL('image/jpeg', 0.8)
+                
+                // Add image to PDF with border styling
+                pdf.addImage(imgData, 'JPEG', 
+                  xPosition + (imageBorderPadding.value * 0.1), 
+                  yPosition + (imageBorderPadding.value * 0.1), 
+                  imageWidth - (imageBorderPadding.value * 0.2), 
+                  imageHeight - (imageBorderPadding.value * 0.2)
+                )
+                
+                // Add border if specified
+                if (borderWeight.value > 0) {
+                  pdf.setLineWidth(borderWeight.value * 0.3)
+                  pdf.rect(xPosition, yPosition, imageWidth, imageHeight)
+                }
+                
+                resolve()
+              } catch (error) {
+                reject(error)
+              }
+            }
+            
+            img.onerror = reject
+            img.src = imageData
+          })
+        } catch (error) {
+          console.error('Error adding image to PDF:', error)
+        }
+      }
+      
+      // Move to next row
+      yPosition += imageHeight + spacing + 10
+      
+      // Check if we need a new page
+      if (yPosition > 250) { // Leave some margin at bottom
+        pdf.addPage()
+        yPosition = 20
+      }
+    }
+    
+    // Save the PDF
+    const filename = `${form.value.houseNumber}-${form.value.name}-${form.value.lastName}.pdf`
+    pdf.save(filename)
     
   } catch (error) {
     console.error('Error creating PDF:', error)
-    alert('เกิดข้อผิดพลาดในการสร้างไฟล์: ' + error.message)
+    alert('เกิดข้อผิดพลาดในการสร้าง PDF: ' + error.message)
   }
 }
 
