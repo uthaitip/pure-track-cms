@@ -779,195 +779,121 @@ const handleSubmit = () => {
   })
 }
 
-// Print functionality
-const printReport = () => {
-  const reportContent = document.getElementById('report-content')
-  if (!reportContent) return
-  
-  // Create a new window for printing
-  const printWindow = window.open('', '_blank')
-  
-  // Get the report content HTML
-  const reportHTML = reportContent.innerHTML
-  
-  // Create the print document
-  const printDocument = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>${form.value.houseNumber}-${form.value.name}-${form.value.lastName}</title>
-      <meta charset="UTF-8">
-      <style>
-        @page {
-          size: A4;
-          margin: 1.5cm;
-        }
-        
-        * {
-          page-break-inside: avoid !important;
-        }
-        
-        @import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
-        
-        body {
-          font-family: 'Sarabun';
-          line-height: 1.4;
-          color: #333;
-          margin: 0;
-          padding: 0;
-          background: white;
-          font-size: ` + fontSize.value + `px;
-          font-weight: ` + fontWeight.value + `;
-        }
-        
-        .report-image {
-          width: 6.5cm !important;
-          height: 4.8cm !important;
-          object-fit: contain !important;
-          border: ` + borderWeight.value + `px solid #333 !important;
-          border-radius: ` + borderRadius.value + `px !important;
-          padding: ` + imageBorderPadding.value + `px !important;
-          background: white !important;
-          page-break-inside: avoid !important;
-          page-break-after: avoid !important;
-          page-break-before: avoid !important;
-          display: inline-block !important;
-          vertical-align: top !important;
-          box-shadow: none !important;
-        }
-        
-        .image-container {
-          margin: 10px 0 !important;
-          page-break-inside: avoid !important;
-          page-break-after: avoid !important;
-          page-break-before: avoid !important;
-        }
-        
-        .image-row {
-          display: flex !important;
-          justify-content: center !important;
-          align-items: flex-start !important;
-          gap: ` + imagePadding.value + `px !important;
-          margin-bottom: ` + imagePadding.value + `px !important;
-          page-break-inside: avoid !important;
-          page-break-after: avoid !important;
-          page-break-before: avoid !important;
-          width: 100% !important;
-          flex-wrap: nowrap !important;
-        }
-        
-        .image-item {
-          flex-shrink: 0 !important;
-          page-break-inside: avoid !important;
-          page-break-after: avoid !important;
-          page-break-before: avoid !important;
-          display: inline-block !important;
-        }
-        
-        .text-center { 
-          text-align: center !important; 
-        }
-        
-        .font-bold { 
-          font-weight: bold !important; 
-        }
-        
-        .text-2xl { 
-          font-size: ` + (fontSize.value + 4) + `px !important; 
-          margin-bottom: 1rem !important; 
-        }
-        
-        .text-xl { 
-          font-size: ` + (fontSize.value + 2) + `px !important; 
-          margin-bottom: 1.5rem !important;
-          font-weight: ` + fontWeight.value + ` !important;
-          text-align: center !important;
-        }
-        
-        .text-lg { 
-          font-size: ` + fontSize.value + `px !important; 
-        }
-        
-        .mb-4 { 
-          margin-bottom: 1rem !important; 
-        }
-        
-        .mb-6 { 
-          margin-bottom: 1.5rem !important; 
-        }
-        
-        .mb-8 { 
-          margin-bottom: 2rem !important; 
-        }
-        
-        .mt-8 { 
-          margin-top: 2rem !important; 
-        }
-        
-        .space-y-2 > * + * { 
-          margin-top: 0.5rem !important; 
-        }
-        
-        .space-y-4 > * + * { 
-          margin-top: 1rem !important; 
-        }
-        
-        .justify-center { 
-          justify-content: center !important; 
-        }
-        
-        .flex {
-          display: flex !important;
-        }
-        
-        button { 
-          display: none !important; 
-        }
-        
-        .bg-white,
-        .bg-gray-50 {
-          background: white !important;
-        }
-        
-        .shadow-lg {
-          box-shadow: none !important;
-        }
-        
-        .rounded-lg {
-          border-radius: 0 !important;
-        }
-        
-        .p-8 {
-          padding: 0 !important;
-        }
-        
-        h2, h3 { 
-          page-break-after: avoid; 
-          margin-top: 0;
-        }
-        
-        p { 
-          page-break-inside: avoid; 
-          margin: 0.5rem 0;
-        }
-      </style>
-    </head>
-    <body>
-      ${reportHTML}
-    </body>
-    </html>
-  `
-  
-  // Write the content to the new window
-  printWindow.document.write(printDocument)
-  printWindow.document.close()
-  
-  // Wait for content to load then print
-  setTimeout(() => {
-    printWindow.focus()
-    printWindow.print()
-    printWindow.close()
-  }, 1000)
+// Direct PDF download functionality
+const printReport = async () => {
+  if (images.value.length === 0) {
+    alert('กรุณาเลือกรูปภาพก่อนดาวน์โหลด')
+    return
+  }
+
+  try {
+    // Get the report content
+    const reportContent = document.getElementById('report-content')
+    if (!reportContent) return
+    
+    // Create HTML content for PDF
+    const reportHTML = reportContent.innerHTML
+    
+    const pdfDocument = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${form.value.houseNumber}-${form.value.name}-${form.value.lastName}</title>
+        <meta charset="UTF-8">
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+          
+          * {
+            font-family: 'Sarabun' !important;
+          }
+          
+          @page {
+            size: A4;
+            margin: 1.5cm;
+          }
+          
+          body {
+            font-family: 'Sarabun';
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background: white;
+            font-size: ${fontSize.value}px;
+            font-weight: ${fontWeight.value};
+          }
+          
+          .report-image {
+            width: 6.5cm;
+            height: 4.8cm;
+            object-fit: contain;
+            border: ${borderWeight.value}px solid #333;
+            border-radius: ${borderRadius.value}px;
+            padding: ${imageBorderPadding.value}px;
+            background: white;
+            margin: 5px;
+            display: inline-block;
+            vertical-align: top;
+          }
+          
+          .image-container {
+            text-align: center;
+            margin: 20px 0;
+          }
+          
+          .image-row {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            margin-bottom: ${imagePadding.value}px;
+          }
+          
+          .image-item {
+            display: inline-block;
+            margin: 0 ${imagePadding.value / 2}px;
+          }
+          
+          .text-center { 
+            text-align: center; 
+          }
+          
+          .text-xl { 
+            font-size: ${fontSize.value + 2}px;
+            margin-bottom: 20px;
+            font-weight: ${fontWeight.value};
+            text-align: center;
+          }
+          
+          .justify-center { 
+            text-align: center; 
+          }
+          
+          button { 
+            display: none; 
+          }
+        </style>
+      </head>
+      <body>
+        ${reportHTML}
+      </body>
+      </html>
+    `
+
+    // Create and download as HTML file that can be printed to PDF
+    const blob = new Blob([pdfDocument], { type: 'text/html' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${form.value.houseNumber}-${form.value.name}-${form.value.lastName}.html`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    window.URL.revokeObjectURL(url)
+    
+  } catch (error) {
+    console.error('Error creating PDF:', error)
+    alert('เกิดข้อผิดพลาดในการสร้างไฟล์: ' + error.message)
+  }
 }
 
 // Save as PDF functionality (same as print)
