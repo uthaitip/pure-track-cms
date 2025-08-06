@@ -1074,14 +1074,15 @@ const exportToWord = async () => {
 }
 
 .image-container {
-  @apply space-y-4;
+  @apply space-y-6;
+  padding: 20px 0;
 }
 
 .image-row {
   display: flex;
   justify-content: center;
-  gap: v-bind(imagePadding + 'px');
-  margin-bottom: v-bind(imagePadding + 'px');
+  gap: v-bind((imagePadding + 10) + 'px');
+  margin-bottom: v-bind((imagePadding + 15) + 'px');
 }
 
 .image-item {
