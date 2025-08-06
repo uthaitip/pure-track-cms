@@ -793,32 +793,87 @@ const createPDFFromHTML = async () => {
   const buttons = reportContent.querySelectorAll('button')
   buttons.forEach(btn => btn.style.display = 'none')
   
-  // Create temporary style to override problematic CSS
-  const tempStyle = document.createElement('style')
-  tempStyle.textContent = `
-    #report-content * {
-      background-color: white !important;
-      border-color: #333333 !important;
-      color: #333333 !important;
-    }
-    #report-content .report-image {
-      background-color: white !important;
-    }
+  // Create a clean clone of the report content to avoid CSS conflicts
+  const originalContent = reportContent.cloneNode(true)
+  
+  // Create a clean container with minimal styling
+  const cleanContainer = document.createElement('div')
+  cleanContainer.style.cssText = `
+    position: fixed;
+    top: -9999px;
+    left: -9999px;
+    width: 800px;
+    background: white;
+    font-family: 'Sarabun', sans-serif;
+    font-size: ${fontSize.value}px;
+    font-weight: ${fontWeight.value};
+    color: #333;
+    padding: 20px;
+    z-index: -1;
   `
-  document.head.appendChild(tempStyle)
+  
+  // Copy content to clean container
+  cleanContainer.innerHTML = originalContent.innerHTML
+  
+  // Remove all class attributes to avoid CSS conflicts
+  const allElements = cleanContainer.getElementsByTagName('*')
+  for (let i = 0; i < allElements.length; i++) {
+    const element = allElements[i]
+    element.removeAttribute('class')
+    
+    // Apply inline styles based on element type
+    if (element.tagName === 'IMG') {
+      element.style.cssText = `
+        width: 320px !important;
+        height: 240px !important;
+        object-fit: contain !important;
+        border: ${borderWeight.value}px solid #333 !important;
+        border-radius: ${borderRadius.value}px !important;
+        padding: ${imageBorderPadding.value}px !important;
+        background: white !important;
+        margin: 5px !important;
+        display: inline-block !important;
+      `
+    } else if (element.tagName === 'DIV') {
+      if (element.textContent && element.textContent.includes('บ้านเลขที่')) {
+        // Title styling
+        element.style.cssText = `
+          text-align: center !important;
+          font-size: ${fontSize.value + 2}px !important;
+          font-weight: ${fontWeight.value} !important;
+          margin-bottom: 20px !important;
+          color: #333 !important;
+          font-family: 'Sarabun', sans-serif !important;
+        `
+      } else {
+        // Container styling
+        element.style.cssText = `
+          display: flex !important;
+          justify-content: center !important;
+          flex-wrap: wrap !important;
+          gap: ${imagePadding.value}px !important;
+          margin-bottom: ${imagePadding.value}px !important;
+        `
+      }
+    } else if (element.tagName === 'BUTTON') {
+      element.style.display = 'none !important'
+    }
+  }
+  
+  document.body.appendChild(cleanContainer)
   
   try {
     // Wait a bit for styles to apply
     await new Promise(resolve => setTimeout(resolve, 100))
     
-    // Capture the HTML as canvas with high quality
-    const canvas = await html2canvas(reportContent, {
+    // Capture the clean HTML as canvas with high quality
+    const canvas = await html2canvas(cleanContainer, {
       scale: 2, // Higher resolution
       useCORS: true,
       allowTaint: false,
       backgroundColor: '#ffffff',
-      width: reportContent.scrollWidth,
-      height: reportContent.scrollHeight,
+      width: cleanContainer.scrollWidth,
+      height: cleanContainer.scrollHeight,
       ignoreElements: (element) => {
         // Skip elements that might cause issues
         return element.tagName === 'BUTTON'
@@ -878,9 +933,9 @@ const createPDFFromHTML = async () => {
   } finally {
     // Show buttons again
     buttons.forEach(btn => btn.style.display = '')
-    // Remove temporary style
-    if (tempStyle && tempStyle.parentNode) {
-      document.head.removeChild(tempStyle)
+    // Remove clean container
+    if (cleanContainer && cleanContainer.parentNode) {
+      document.body.removeChild(cleanContainer)
     }
   }
 }
