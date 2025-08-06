@@ -470,7 +470,7 @@
 
         <!-- Images Display Section -->
         <div v-if="images.length > 0" class="mt-8">
-          <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center sarabun-font" :style="{ fontSize: fontSize + 'px', fontWeight: fontWeight }">{{  form.name }}  {{ form.lastName }} บ้านเลขที่ {{ form.houseNumber }} ตำบล {{ form.tambon }} อำเภอ {{ form.amphur }} จังหวัด {{ form.province }}</h3>
+          <h3 class="text-gray-800 mb-6 text-center sarabun-font">{{  form.name }}  {{ form.lastName }} บ้านเลขที่ {{ form.houseNumber }} ตำบล {{ form.tambon }} อำเภอ {{ form.amphur }} จังหวัด {{ form.province }}</h3>
           
           <!-- Image Layout Logic -->
           <div class="image-container" :key="`images-${images.length}`">
@@ -621,6 +621,7 @@ const saveLocation = () => {
 const saveFontSize = () => {
   if (process.client) {
     localStorage.setItem('simple-report-fontsize', fontSize.value.toString())
+    console.log('Font size saved:', fontSize.value)
   }
 }
 
@@ -1083,6 +1084,8 @@ const exportToWord = async () => {
 /* Sarabun Thai Font */
 .sarabun-font {
   font-family: 'Sarabun', Arial, sans-serif !important;
+  font-size: v-bind(fontSize + 'px') !important;
+  font-weight: v-bind(fontWeight) !important;
 }
 
 /* A4 paper dimensions: 210mm x 297mm */
