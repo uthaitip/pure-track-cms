@@ -815,7 +815,7 @@ const printReport = () => {
         .report-image {
           width: 6.5cm !important;
           height: 4.8cm !important;
-          object-fit: cover !important;
+          object-fit: contain !important;
           border: ` + borderWeight.value + `px solid #333 !important;
           border-radius: ` + borderRadius.value + `px !important;
           padding: ` + imageBorderPadding.value + `px !important;
@@ -1076,7 +1076,7 @@ const exportToWord = async () => {
 .report-image {
   width: 320px !important;
   height: 240px !important;
-  object-fit: cover;
+  object-fit: contain;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   background: white;
 }
@@ -1104,7 +1104,7 @@ const exportToWord = async () => {
     page-break-inside: avoid !important;
     page-break-after: avoid !important;
     page-break-before: avoid !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
     border: ` + borderWeight.value + `px solid #333 !important;
     border-radius: ` + borderRadius.value + `px !important;
     padding: ` + imageBorderPadding.value + `px !important;
