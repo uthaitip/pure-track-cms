@@ -48,7 +48,8 @@ export default defineNuxtConfig({
     '/about': { prerender: true },
     // Admin dashboard renders only on client-side
     '/admin/**': { ssr: false },
-    // Dashboard routes with client-side libraries should not use SSR
+    // Simple report page with client-side libraries should not use SSR
+    '/simple-report': { ssr: false },
     '/dashboard/simple-report': { ssr: false },
     // Add headers to all routes
     '/**': { 
