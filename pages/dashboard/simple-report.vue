@@ -129,28 +129,28 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ fontSize }}px</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="fontSize = 14; saveFontSize()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-blue-500 text-white': fontSize === 14 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-blue-500 text-white hover:bg-blue-600': fontSize === 14 }"
                 >
                   เล็ก
                 </button>
                 <button
                   @click="fontSize = 16; saveFontSize()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-blue-500 text-white': fontSize === 16 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-blue-500 text-white hover:bg-blue-600': fontSize === 16 }"
                 >
                   กลาง
                 </button>
                 <button
                   @click="fontSize = 18; saveFontSize()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-blue-500 text-white': fontSize === 18 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-blue-500 text-white hover:bg-blue-600': fontSize === 18 }"
                 >
                   ใหญ่
                 </button>
@@ -174,28 +174,28 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ fontWeight }}</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="fontWeight = 300; saveFontWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-purple-500 text-white': fontWeight === 300 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-purple-500 text-white hover:bg-purple-600': fontWeight === 300 }"
                 >
                   บาง
                 </button>
                 <button
                   @click="fontWeight = 400; saveFontWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-purple-500 text-white': fontWeight === 400 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-purple-500 text-white hover:bg-purple-600': fontWeight === 400 }"
                 >
                   ปกติ
                 </button>
                 <button
                   @click="fontWeight = 600; saveFontWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-purple-500 text-white': fontWeight === 600 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-purple-500 text-white hover:bg-purple-600': fontWeight === 600 }"
                 >
                   หนา
                 </button>
@@ -219,28 +219,28 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ imagePadding }}px</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="imagePadding = 5; savePadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-green-500 text-white': imagePadding === 5 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-green-500 text-white hover:bg-green-600': imagePadding === 5 }"
                 >
                   แน่น
                 </button>
                 <button
                   @click="imagePadding = 10; savePadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-green-500 text-white': imagePadding === 10 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-green-500 text-white hover:bg-green-600': imagePadding === 10 }"
                 >
                   กลาง
                 </button>
                 <button
                   @click="imagePadding = 15; savePadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-green-500 text-white': imagePadding === 15 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-green-500 text-white hover:bg-green-600': imagePadding === 15 }"
                 >
                   โล่ง
                 </button>
@@ -264,28 +264,28 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ imageBorderPadding }}px</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="imageBorderPadding = 0; saveImageBorderPadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-teal-500 text-white': imageBorderPadding === 0 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-teal-500 text-white hover:bg-teal-600': imageBorderPadding === 0 }"
                 >
                   ไม่มี
                 </button>
                 <button
                   @click="imageBorderPadding = 8; saveImageBorderPadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-teal-500 text-white': imageBorderPadding === 8 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-teal-500 text-white hover:bg-teal-600': imageBorderPadding === 8 }"
                 >
                   ปกติ
                 </button>
                 <button
                   @click="imageBorderPadding = 16; saveImageBorderPadding()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-teal-500 text-white': imageBorderPadding === 16 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-teal-500 text-white hover:bg-teal-600': imageBorderPadding === 16 }"
                 >
                   เยอะ
                 </button>
@@ -312,36 +312,36 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ borderWeight }}px</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="borderWeight = 0; saveBorderWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-red-500 text-white': borderWeight === 0 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-red-500 text-white hover:bg-red-600': borderWeight === 0 }"
                 >
                   ไม่มี
                 </button>
                 <button
                   @click="borderWeight = 1; saveBorderWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-red-500 text-white': borderWeight === 1 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-red-500 text-white hover:bg-red-600': borderWeight === 1 }"
                 >
                   บาง
                 </button>
                 <button
                   @click="borderWeight = 2; saveBorderWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-red-500 text-white': borderWeight === 2 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-red-500 text-white hover:bg-red-600': borderWeight === 2 }"
                 >
                   กลาง
                 </button>
                 <button
                   @click="borderWeight = 3; saveBorderWeight()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-red-500 text-white': borderWeight === 3 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-red-500 text-white hover:bg-red-600': borderWeight === 3 }"
                 >
                   หนา
                 </button>
@@ -365,28 +365,28 @@
                 />
                 <span class="text-sm text-gray-600 min-w-[50px]">{{ borderRadius }}px</span>
               </div>
-              <div class="flex gap-1 mt-2">
+              <div class="flex gap-2 mt-2">
                 <button
                   @click="borderRadius = 0; saveBorderRadius()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-orange-500 text-white': borderRadius === 0 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-orange-500 text-white hover:bg-orange-600': borderRadius === 0 }"
                 >
                   เหลี่ยม
                 </button>
                 <button
                   @click="borderRadius = 8; saveBorderRadius()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-orange-500 text-white': borderRadius === 8 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-orange-500 text-white hover:bg-orange-600': borderRadius === 8 }"
                 >
                   โค้งเล็ก
                 </button>
                 <button
                   @click="borderRadius = 12; saveBorderRadius()"
                   type="button"
-                  class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-                  :class="{ 'bg-orange-500 text-white': borderRadius === 12 }"
+                  class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                  :class="{ 'bg-orange-500 text-white hover:bg-orange-600': borderRadius === 12 }"
                 >
                   โค้งใหญ่
                 </button>
@@ -488,12 +488,24 @@
           <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center" :style="{ fontSize: fontSize + 'px', fontWeight: fontWeight }">{{  form.name }}  {{ form.lastName }} บ้านเลขที่ {{ form.houseNumber }} หมู่ที่ {{ form.mooMuNumber }} ตำบล {{ form.tambon }} อำเภอ {{ form.amphur }} จังหวัด {{ form.province }}</h3>
           
           <!-- Image Layout Logic -->
-          <div class="image-container">
-            <div v-for="(row, rowIndex) in imageLayout.rows" :key="rowIndex" 
+          <div class="image-container" :key="`images-${images.length}`">
+            <div v-for="(row, rowIndex) in imageLayout.rows" :key="`row-${rowIndex}-${row.length}`" 
                  class="image-row" 
-                 :class="{ 'justify-center': row.length === 1, 'mb-4': rowIndex < imageLayout.rows.length - 1 }">
-              <div v-for="(image, imgIndex) in row" :key="imgIndex" class="image-item">
-                <img :src="image" :alt="`Image ${getImageNumber(rowIndex, imgIndex)}`" class="report-image" />
+                 :class="{ 'justify-center': row.length === 1 }"
+                 :style="{ 
+                   gap: (imagePadding + 10) + 'px',
+                   marginBottom: (imagePadding + 15) + 'px'
+                 }">
+              <div v-for="(image, imgIndex) in row" :key="`img-${rowIndex}-${imgIndex}-${image.slice(-20)}`" 
+                   class="image-item">
+                <img :src="image" 
+                     :alt="`Image ${getImageNumber(rowIndex, imgIndex)}`" 
+                     class="report-image"
+                     :style="{
+                       border: borderWeight + 'px solid #333',
+                       borderRadius: borderRadius + 'px',
+                       padding: imageBorderPadding + 'px'
+                     }" />
               </div>
             </div>
           </div>
@@ -526,7 +538,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 
 definePageMeta({
   layout: 'dashboard',
@@ -625,6 +637,7 @@ const saveLocation = () => {
 const saveFontSize = () => {
   if (process.client) {
     localStorage.setItem('simple-report-fontsize', fontSize.value.toString())
+    console.log('Font size saved:', fontSize.value)
   }
 }
 
@@ -670,32 +683,35 @@ onMounted(() => {
 
 // Computed property to arrange images based on count
 const imageLayout = computed(() => {
-  const count = images.value.length
+  const currentImages = [...images.value] // Create reactive copy
+  const count = currentImages.length
+  
+  console.log('Image layout recalculating, count:', count) // Debug log
   
   if (count === 0) return { rows: [] }
-  if (count === 1) return { rows: [[images.value[0]]] }
-  if (count === 2) return { rows: [images.value] }
+  if (count === 1) return { rows: [[currentImages[0]]] }
+  if (count === 2) return { rows: [currentImages] }
   
   // สำหรับ 3 รูปขึ้นไป: แถวแรกแสดง 1 รูป ถ้าเป็นเลขคี่
   const rows = []
   
   if (count % 2 === 1) {
     // เลขคี่: แถวแรก 1 รูป, แถวถัดไปคู่ละ 2 รูป
-    rows.push([images.value[0]]) // แถวแรก 1 รูป
+    rows.push([currentImages[0]]) // แถวแรก 1 รูป
     
     for (let i = 1; i < count; i += 2) {
-      const row = [images.value[i]]
+      const row = [currentImages[i]]
       if (i + 1 < count) {
-        row.push(images.value[i + 1])
+        row.push(currentImages[i + 1])
       }
       rows.push(row)
     }
   } else {
     // เลขคู่: แบ่งเป็นคู่ๆ
     for (let i = 0; i < count; i += 2) {
-      const row = [images.value[i]]
+      const row = [currentImages[i]]
       if (i + 1 < count) {
-        row.push(images.value[i + 1])
+        row.push(currentImages[i + 1])
       }
       rows.push(row)
     }
@@ -767,200 +783,267 @@ const getImageNumber = (rowIndex, imgIndex) => {
 // Handle form submission
 const handleSubmit = () => {
   showReport.value = true
-  // Scroll to report section
-  setTimeout(() => {
-    document.getElementById('report-content')?.scrollIntoView({ 
-      behavior: 'smooth' 
-    })
-  }, 100)
+  
+  // Force reactivity update for images
+  nextTick(() => {
+    // Scroll to report section
+    setTimeout(() => {
+      document.getElementById('report-content')?.scrollIntoView({ 
+        behavior: 'smooth' 
+      })
+    }, 100)
+  })
 }
 
-// Print functionality
-const printReport = () => {
+// Function to create PDF using iframe isolation to completely avoid CSS conflicts
+const createPDFFromHTML = async () => {
+  // Dynamic import html2canvas
+  const html2canvas = (await import('html2canvas')).default
+  const jsPDF = (await import('jspdf')).default
+  
   const reportContent = document.getElementById('report-content')
-  if (!reportContent) return
+  if (!reportContent) return null
   
-  // Create a new window for printing
-  const printWindow = window.open('', '_blank')
+  // Hide buttons before capturing
+  const buttons = reportContent.querySelectorAll('button')
+  buttons.forEach(btn => btn.style.display = 'none')
   
-  // Get the report content HTML
-  const reportHTML = reportContent.innerHTML
+  // Create an iframe to completely isolate from main page CSS
+  const iframe = document.createElement('iframe')
+  iframe.style.cssText = `
+    position: fixed;
+    top: -9999px;
+    left: -9999px;
+    width: 800px;
+    height: 1200px;
+    border: none;
+    z-index: -1;
+  `
+  document.body.appendChild(iframe)
   
-  // Create the print document
-  const printDocument = `
+  // Wait for iframe to load
+  await new Promise(resolve => {
+    iframe.onload = resolve
+    if (iframe.contentDocument) resolve() // Already loaded
+  })
+  
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document
+  
+  // Get text content from the report
+  const titleElement = reportContent.querySelector('h3')
+  const titleText = titleElement ? titleElement.textContent : ''
+  
+  // Get images from the report
+  const images = reportContent.querySelectorAll('.report-image')
+  const imageDataList = []
+  for (const img of images) {
+    imageDataList.push(img.src)
+  }
+  
+  // Create clean HTML in iframe
+  iframeDoc.open()
+  iframeDoc.write(`
     <!DOCTYPE html>
     <html>
     <head>
-      <title>${form.value.houseNumber}-หมู่${form.value.mooMuNumber}-${form.value.name}-${form.value.lastName}</title>
       <meta charset="UTF-8">
+      <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
       <style>
-        @page {
-          size: A4;
-          margin: 1.5cm;
-        }
-        
         * {
-          page-break-inside: avoid !important;
-        }
-        
-        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
-        
-        body {
-          font-family: 'Sarabun', Arial, sans-serif;
-          line-height: 1.4;
-          color: #333;
           margin: 0;
           padding: 0;
-          background: white;
-          font-size: ` + fontSize.value + `px;
-          font-weight: ` + fontWeight.value + `;
+          box-sizing: border-box;
         }
-        
-        .report-image {
-          width: 7cm !important;
-          height: auto !important;
-          max-height: 5.25cm !important;
-          object-fit: contain !important;
-          border: ` + borderWeight.value + `px solid #333 !important;
-          border-radius: ` + borderRadius.value + `px !important;
-          padding: ` + imageBorderPadding.value + `px !important;
-          background: white !important;
-          page-break-inside: avoid !important;
-          page-break-after: avoid !important;
-          page-break-before: avoid !important;
-          display: inline-block !important;
-          vertical-align: top !important;
+        body {
+          font-family: 'Sarabun', sans-serif;
+          font-size: ${fontSize.value}px;
+          font-weight: ${fontWeight.value};
+          color: #333333;
+          background: #ffffff;
+          padding: 40px 20px 20px 20px;
+          line-height: 1.4;
         }
-        
+        .title {
+          text-align: center;
+          font-size: ${fontSize.value + 2}px;
+          font-weight: ${fontWeight.value};
+          margin-bottom: 40px;
+          margin-top: 20px;
+          color: #333333;
+        }
         .image-container {
-          margin: 10px 0 !important;
-          page-break-inside: avoid !important;
-          page-break-after: avoid !important;
-          page-break-before: avoid !important;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: ${imagePadding.value}px;
         }
-        
         .image-row {
-          display: flex !important;
-          justify-content: center !important;
-          align-items: flex-start !important;
-          gap: ` + imagePadding.value + `px !important;
-          margin-bottom: ` + imagePadding.value + `px !important;
-          page-break-inside: avoid !important;
-          page-break-after: avoid !important;
-          page-break-before: avoid !important;
-          width: 100% !important;
+          display: flex;
+          justify-content: center;
+          gap: ${imagePadding.value + 15}px;
+          margin-bottom: ${imagePadding.value + 15}px;
         }
-        
         .image-item {
-          flex-shrink: 0 !important;
-          page-break-inside: avoid !important;
-          page-break-after: avoid !important;
-          page-break-before: avoid !important;
-          display: inline-block !important;
+          width: 280px;
+          height: 210px;
+          border: ${borderWeight.value}px solid #333333;
+          border-radius: ${borderRadius.value}px;
+          padding: ${imageBorderPadding.value}px;
+          background: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          box-sizing: border-box;
         }
-        
-        .text-center { 
-          text-align: center !important; 
-        }
-        
-        .font-bold { 
-          font-weight: bold !important; 
-        }
-        
-        .text-2xl { 
-          font-size: ` + (fontSize.value + 4) + `px !important; 
-          margin-bottom: 1rem !important; 
-        }
-        
-        .text-xl { 
-          font-size: ` + (fontSize.value + 2) + `px !important; 
-          margin-bottom: 1.5rem !important; 
-        }
-        
-        .text-lg { 
-          font-size: ` + fontSize.value + `px !important; 
-        }
-        
-        .mb-4 { 
-          margin-bottom: 1rem !important; 
-        }
-        
-        .mb-6 { 
-          margin-bottom: 1.5rem !important; 
-        }
-        
-        .mb-8 { 
-          margin-bottom: 2rem !important; 
-        }
-        
-        .mt-8 { 
-          margin-top: 2rem !important; 
-        }
-        
-        .space-y-2 > * + * { 
-          margin-top: 0.5rem !important; 
-        }
-        
-        .space-y-4 > * + * { 
-          margin-top: 1rem !important; 
-        }
-        
-        .justify-center { 
-          justify-content: center !important; 
-        }
-        
-        .flex {
-          display: flex !important;
-        }
-        
-        button { 
-          display: none !important; 
-        }
-        
-        .bg-white,
-        .bg-gray-50 {
-          background: white !important;
-        }
-        
-        .shadow-lg {
-          box-shadow: none !important;
-        }
-        
-        .rounded-lg {
-          border-radius: 0 !important;
-        }
-        
-        .p-8 {
-          padding: 0 !important;
-        }
-        
-        h2, h3 { 
-          page-break-after: avoid; 
-          margin-top: 0;
-        }
-        
-        p { 
-          page-break-inside: avoid; 
-          margin: 0.5rem 0;
+        .image-item img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+          width: auto;
+          height: auto;
         }
       </style>
     </head>
     <body>
-      ${reportHTML}
+      <div class="title">${titleText}</div>
+      <div class="image-container" id="images"></div>
     </body>
     </html>
-  `
+  `)
+  iframeDoc.close()
   
-  // Write the content to the new window
-  printWindow.document.write(printDocument)
-  printWindow.document.close()
+  // Add images to iframe
+  const imagesContainer = iframeDoc.getElementById('images')
+  const layout = imageLayout.value
   
-  // Wait for content to load then print
-  setTimeout(() => {
-    printWindow.focus()
-    printWindow.print()
-    printWindow.close()
-  }, 1000)
+  layout.rows.forEach(row => {
+    const rowDiv = iframeDoc.createElement('div')
+    rowDiv.className = 'image-row'
+    
+    row.forEach(imageSrc => {
+      const itemDiv = iframeDoc.createElement('div')
+      itemDiv.className = 'image-item'
+      
+      const img = iframeDoc.createElement('img')
+      img.src = imageSrc
+      img.style.display = 'block'
+      
+      itemDiv.appendChild(img)
+      rowDiv.appendChild(itemDiv)
+    })
+    
+    imagesContainer.appendChild(rowDiv)
+  })
+  
+  // Wait for images to load
+  const iframeImages = iframeDoc.querySelectorAll('img')
+  await Promise.all(Array.from(iframeImages).map(img => {
+    return new Promise(resolve => {
+      if (img.complete) {
+        resolve()
+      } else {
+        img.onload = resolve
+        img.onerror = resolve
+      }
+    })
+  }))
+  
+  try {
+    // Wait a bit for styles to apply
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
+    // Capture the iframe content as canvas
+    const canvas = await html2canvas(iframeDoc.body, {
+      scale: 2, // Higher resolution
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: '#ffffff',
+      width: 800,
+      height: iframeDoc.body.scrollHeight,
+      ignoreElements: (element) => {
+        // Skip elements that might cause issues
+        return element.tagName === 'BUTTON'
+      }
+    })
+    
+    // Create PDF
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    })
+    
+    // Calculate dimensions to fit A4
+    const pageWidth = pdf.internal.pageSize.getWidth()
+    const pageHeight = pdf.internal.pageSize.getHeight()
+    const canvasWidth = canvas.width
+    const canvasHeight = canvas.height
+    
+    // Calculate scaling to fit page width
+    const scale = pageWidth / (canvasWidth / 2) // Divide by 2 because we used scale: 2
+    const scaledHeight = (canvasHeight / 2) * scale
+    
+    // Add image to PDF
+    const imgData = canvas.toDataURL('image/png', 1.0)
+    
+    if (scaledHeight <= pageHeight) {
+      // Fits on one page
+      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, scaledHeight)
+    } else {
+      // Need multiple pages
+      let yOffset = 0
+      const pageRatio = pageHeight / scaledHeight
+      const sliceHeight = canvasHeight * pageRatio
+      
+      while (yOffset < canvasHeight) {
+        const sliceCanvas = document.createElement('canvas')
+        const sliceCtx = sliceCanvas.getContext('2d')
+        const remainingHeight = Math.min(sliceHeight, canvasHeight - yOffset)
+        
+        sliceCanvas.width = canvasWidth
+        sliceCanvas.height = remainingHeight
+        
+        // Draw slice
+        sliceCtx.drawImage(canvas, 0, yOffset, canvasWidth, remainingHeight, 0, 0, canvasWidth, remainingHeight)
+        
+        const sliceData = sliceCanvas.toDataURL('image/png', 1.0)
+        
+        if (yOffset > 0) pdf.addPage()
+        pdf.addImage(sliceData, 'PNG', 0, 0, pageWidth, pageHeight)
+        
+        yOffset += sliceHeight
+      }
+    }
+    
+    return pdf
+  } finally {
+    // Show buttons again
+    buttons.forEach(btn => btn.style.display = '')
+    // Remove iframe
+    if (iframe && iframe.parentNode) {
+      document.body.removeChild(iframe)
+    }
+  }
+}
+
+// Direct PDF generation using HTML2Canvas for perfect quality
+const printReport = async () => {
+  if (images.value.length === 0) {
+    alert('กรุณาเลือกรูปภาพก่อนดาวน์โหลด')
+    return
+  }
+
+  try {
+    const pdf = await createPDFFromHTML()
+    if (pdf) {
+      const filename = `${form.value.houseNumber}-${form.value.name}-${form.value.lastName}.pdf`
+      pdf.save(filename)
+    }
+  } catch (error) {
+    console.error('Error creating PDF:', error)
+    alert('เกิดข้อผิดพลาดในการสร้าง PDF: ' + error.message)
+  }
 }
 
 // Save as PDF functionality (same as print)
@@ -987,7 +1070,7 @@ const exportToWord = async () => {
             margin: 50cm;
           }
           body {
-            font-family: 'Sarabun', Arial, sans-serif;
+            font-family: 'Sarabun';
             font-size: ${fontSize.value}px;
             font-weight: ${fontWeight.value};
             line-height: 1.4;
@@ -1014,14 +1097,15 @@ const exportToWord = async () => {
             display: inline-block;
           }
           .report-image {
-            width: 7.58cm;
+            width: 320px;
             height: auto;
-            max-height: 5.69cm;
+            max-height: 240px;
             object-fit: contain;
             border: ${borderWeight.value}px solid #333;
             border-radius: ${borderRadius.value}px;
             padding: ${imageBorderPadding.value}px;
             background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
           }
         </style>
       </head>
@@ -1071,28 +1155,41 @@ const exportToWord = async () => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+/* Apply Sarabun font to everything */
+* {
+  font-family: 'Sarabun' !important;
+}
+
+/* Sarabun Thai Font */
+.sarabun-font {
+  font-family: 'Sarabun' !important;
+  font-size: v-bind(fontSize + 'px') !important;
+  font-weight: v-bind(fontWeight) !important;
+}
+
 /* A4 paper dimensions: 210mm x 297mm */
 /* 40% of A4 width = 84mm ≈ 320px (at 96 DPI) */
 .report-image {
-  width: 320px;
-  height: 240px;
+  width: 280px !important;
+  height: 210px !important;
   object-fit: contain;
-  border: v-bind(borderWeight + 'px solid #333');
-  border-radius: v-bind(borderRadius + 'px');
-  padding: v-bind(imageBorderPadding + 'px');
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   background: white;
 }
 
 .image-container {
-  @apply space-y-4;
+  @apply space-y-6;
+  padding: 20px 0;
 }
 
 .image-row {
   display: flex;
   justify-content: center;
-  gap: v-bind(imagePadding + 'px');
-  margin-bottom: v-bind(imagePadding + 'px');
+  align-items: flex-start;
+  gap: v-bind((imagePadding + 15) + 'px');
+  margin-bottom: v-bind((imagePadding + 15) + 'px');
 }
 
 .image-item {
@@ -1102,9 +1199,8 @@ const exportToWord = async () => {
 /* Print styles */
 @media print {
   .report-image {
-    width: 7cm !important;
-    height: auto !important;
-    max-height: 5.25cm !important;
+    width: 6.5cm !important;
+    height: 4.8cm !important;
     page-break-inside: avoid !important;
     page-break-after: avoid !important;
     page-break-before: avoid !important;
@@ -1115,6 +1211,7 @@ const exportToWord = async () => {
     background: white !important;
     display: inline-block !important;
     vertical-align: top !important;
+    box-shadow: none !important;
   }
   
   .image-row {
