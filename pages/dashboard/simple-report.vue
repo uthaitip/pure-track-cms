@@ -52,6 +52,21 @@
             
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
+                หมู่ที่ (Moo Number) <span class="text-red-500">*</span>
+              </label>
+              <input
+                v-model="form.mooMuNumber"
+                type="text"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="กรอกหมู่ที่"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
                 ตำบล (Tambon) <span class="text-red-500">*</span>
               </label>
               <input
@@ -470,7 +485,7 @@
 
         <!-- Images Display Section -->
         <div v-if="images.length > 0" class="mt-8">
-          <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center" :style="{ fontSize: fontSize + 'px', fontWeight: fontWeight }">{{  form.name }}  {{ form.lastName }} บ้านเลขที่ {{ form.houseNumber }} ตำบล {{ form.tambon }} อำเภอ {{ form.amphur }} จังหวัด {{ form.province }}</h3>
+          <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center" :style="{ fontSize: fontSize + 'px', fontWeight: fontWeight }">{{  form.name }}  {{ form.lastName }} บ้านเลขที่ {{ form.houseNumber }} หมู่ที่ {{ form.mooMuNumber }} ตำบล {{ form.tambon }} อำเภอ {{ form.amphur }} จังหวัด {{ form.province }}</h3>
           
           <!-- Image Layout Logic -->
           <div class="image-container">
@@ -523,6 +538,7 @@ const form = ref({
   name: '',
   lastName: '',
   houseNumber: '',
+  mooMuNumber: '',
   tambon: '',
   amphur: '',
   province: ''
@@ -775,7 +791,7 @@ const printReport = () => {
     <!DOCTYPE html>
     <html>
     <head>
-      <title>${form.value.houseNumber}-${form.value.name}-${form.value.lastName}</title>
+      <title>${form.value.houseNumber}-หมู่${form.value.mooMuNumber}-${form.value.name}-${form.value.lastName}</title>
       <meta charset="UTF-8">
       <style>
         @page {
@@ -1011,7 +1027,7 @@ const exportToWord = async () => {
       </head>
       <body>
         <div class="header">
-          ${form.value.name} ${form.value.lastName} บ้านเลขที่ ${form.value.houseNumber} ตำบล${form.value.tambon} อำเภอ${form.value.amphur} จังหวัด${form.value.province}
+          ${form.value.name} ${form.value.lastName} บ้านเลขที่ ${form.value.houseNumber} หมู่ที่ ${form.value.mooMuNumber} ตำบล${form.value.tambon} อำเภอ${form.value.amphur} จังหวัด${form.value.province}
         </div>
         <div class="image-container">
     `
@@ -1040,7 +1056,7 @@ const exportToWord = async () => {
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${form.value.houseNumber}-${form.value.name}-${form.value.lastName}.doc`
+    a.download = `${form.value.houseNumber}-หมู่${form.value.mooMuNumber}-${form.value.name}-${form.value.lastName}.doc`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
