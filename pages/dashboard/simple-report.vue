@@ -797,6 +797,9 @@ const handleSubmit = () => {
 
 // Function to create PDF using iframe isolation to completely avoid CSS conflicts
 const createPDFFromHTML = async () => {
+  // Only run on client side
+  if (!process.client) return null
+  
   // Dynamic import html2canvas
   const html2canvas = (await import('html2canvas')).default
   const jsPDF = (await import('jspdf')).default
@@ -1029,6 +1032,8 @@ const createPDFFromHTML = async () => {
 
 // Direct PDF generation using HTML2Canvas for perfect quality
 const printReport = async () => {
+  if (!process.client) return
+  
   if (images.value.length === 0) {
     alert('กรุณาเลือกรูปภาพก่อนดาวน์โหลด')
     return
@@ -1053,6 +1058,8 @@ const saveAsPDF = () => {
 
 // Export to Word functionality using HTML to Word approach
 const exportToWord = async () => {
+  if (!process.client) return
+  
   if (images.value.length === 0) {
     alert('กรุณาเลือกรูปภาพก่อนส่งออก')
     return
