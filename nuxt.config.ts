@@ -24,6 +24,7 @@ export default defineNuxtConfig({
       }
     },
     optimizeDeps: {
+      include: ['html2canvas', 'jspdf'],
       exclude: ['@vite/client', '@vite/env']
     },
     build: {
@@ -75,7 +76,7 @@ export default defineNuxtConfig({
   // Build optimizations
   build: {
     // Transpile specific packages if needed
-    transpile: ['docx', 'file-saver']
+    transpile: ['docx', 'file-saver', 'html2canvas', 'jspdf']
   },
 
   // Runtime config for environment variables
