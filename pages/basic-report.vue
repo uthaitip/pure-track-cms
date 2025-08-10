@@ -470,7 +470,7 @@
       <div v-if="showReport" class="mt-8 bg-white rounded-lg shadow-lg p-8" id="report-content">
         <!-- Images Display Section -->
         <div v-if="images.length > 0" class="mt-8">
-          <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center" :style="{ fontSize: fontSize + 'px', fontWeight: fontWeight }">{{ form.name }} {{ form.lastName }} {{ form.houseNumber ? 'บ้านเลขที่ ' + form.houseNumber : '' }} {{ form.mooMuNumber ? 'หมู่ที่ ' + form.mooMuNumber : '' }} {{ form.tambon ? 'ตำบล ' + form.tambon : '' }} {{ form.amphur ? 'อำเภอ ' + form.amphur : '' }} {{ form.province ? 'จังหวัด ' + form.province : '' }}</h3>
+          <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center" :style="{ fontSize: fontSize + 'px', fontWeight: fontWeight }">{{ form.name }} {{ form.lastName }} บ้านทุ่งยง {{ form.houseNumber ? 'บ้านเลขที่ ' + form.houseNumber : '' }} {{ form.mooMuNumber ? 'หมู่ที่ ' + form.mooMuNumber : '' }} {{ form.tambon ? 'ตำบล ' + form.tambon : '' }} {{ form.amphur ? 'อำเภอ ' + form.amphur : '' }} {{ form.province ? 'จังหวัด ' + form.province : '' }}</h3>
           
           <!-- Image Layout Logic -->
           <div class="image-container" :key="`images-${images.length}`">
