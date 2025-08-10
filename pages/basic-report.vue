@@ -505,6 +505,12 @@
             📄 พิมพ์รายงาน
           </button>
           <button
+            @click="saveAsPDF"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            💾 บันทึก PDF
+          </button>
+          <button
             @click="exportToWord"
             class="bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
           >
@@ -773,6 +779,241 @@ const handleSubmit = () => {
   })
 }
 
+// Function to create PDF using iframe isolation to completely avoid CSS conflicts
+const createPDFFromHTML = async () => {
+  // Only run on client side
+  if (!process.client) return null
+  
+  // Dynamic import html2canvas
+  const html2canvas = (await import('html2canvas')).default
+  const jsPDF = (await import('jspdf')).default
+  
+  const reportContent = document.getElementById('report-content')
+  if (!reportContent) return null
+  
+  // Hide buttons before capturing
+  const buttons = reportContent.querySelectorAll('button')
+  buttons.forEach(btn => btn.style.display = 'none')
+  
+  // Create an iframe to completely isolate from main page CSS
+  const iframe = document.createElement('iframe')
+  iframe.style.cssText = `
+    position: fixed;
+    top: -9999px;
+    left: -9999px;
+    width: 800px;
+    height: 1200px;
+    border: none;
+    z-index: -1;
+  `
+  document.body.appendChild(iframe)
+  
+  // Wait for iframe to load
+  await new Promise(resolve => {
+    iframe.onload = resolve
+    if (iframe.contentDocument) resolve() // Already loaded
+  })
+  
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document
+  
+  // Get text content from the report
+  const titleElement = reportContent.querySelector('h3')
+  const titleText = titleElement ? titleElement.textContent : ''
+  
+  // Get images from the report
+  const images = reportContent.querySelectorAll('.report-image')
+  const imageDataList = []
+  for (const img of images) {
+    imageDataList.push(img.src)
+  }
+  
+  // Create clean HTML in iframe
+  iframeDoc.open()
+  iframeDoc.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: 'Sarabun', sans-serif;
+          font-size: ${fontSize.value}px;
+          font-weight: ${fontWeight.value};
+          color: #333333;
+          background: #ffffff;
+          padding: 40px 20px 20px 20px;
+          line-height: 1.4;
+        }
+        .title {
+          text-align: center;
+          font-size: ${fontSize.value + 2}px;
+          font-weight: ${fontWeight.value};
+          margin-bottom: 40px;
+          margin-top: 20px;
+          color: #333333;
+        }
+        .image-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: ${imagePadding.value}px;
+        }
+        .image-row {
+          display: flex;
+          justify-content: center;
+          gap: ${imagePadding.value + 15}px;
+          margin-bottom: ${imagePadding.value + 15}px;
+        }
+        .image-item {
+          width: 280px;
+          height: 210px;
+          border: ${borderWeight.value}px solid #333333;
+          border-radius: ${borderRadius.value}px;
+          padding: ${imageBorderPadding.value}px;
+          background: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          box-sizing: border-box;
+        }
+        .image-item img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+          width: auto;
+          height: auto;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="title">${titleText}</div>
+      <div class="image-container" id="images"></div>
+    </body>
+    </html>
+  `)
+  iframeDoc.close()
+  
+  // Add images to iframe
+  const imagesContainer = iframeDoc.getElementById('images')
+  const layout = imageLayout.value
+  
+  layout.rows.forEach(row => {
+    const rowDiv = iframeDoc.createElement('div')
+    rowDiv.className = 'image-row'
+    
+    row.forEach(imageSrc => {
+      const itemDiv = iframeDoc.createElement('div')
+      itemDiv.className = 'image-item'
+      
+      const img = iframeDoc.createElement('img')
+      img.src = imageSrc
+      img.style.display = 'block'
+      
+      itemDiv.appendChild(img)
+      rowDiv.appendChild(itemDiv)
+    })
+    
+    imagesContainer.appendChild(rowDiv)
+  })
+  
+  // Wait for images to load
+  const iframeImages = iframeDoc.querySelectorAll('img')
+  await Promise.all(Array.from(iframeImages).map(img => {
+    return new Promise(resolve => {
+      if (img.complete) {
+        resolve()
+      } else {
+        img.onload = resolve
+        img.onerror = resolve
+      }
+    })
+  }))
+  
+  try {
+    // Wait a bit for styles to apply
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
+    // Capture the iframe content as canvas
+    const canvas = await html2canvas(iframeDoc.body, {
+      scale: 2, // Higher resolution
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: '#ffffff',
+      width: 800,
+      height: iframeDoc.body.scrollHeight,
+      ignoreElements: (element) => {
+        // Skip elements that might cause issues
+        return element.tagName === 'BUTTON'
+      }
+    })
+    
+    // Create PDF
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    })
+    
+    // Calculate dimensions to fit A4
+    const pageWidth = pdf.internal.pageSize.getWidth()
+    const pageHeight = pdf.internal.pageSize.getHeight()
+    const canvasWidth = canvas.width
+    const canvasHeight = canvas.height
+    
+    // Calculate scaling to fit page width
+    const scale = pageWidth / (canvasWidth / 2) // Divide by 2 because we used scale: 2
+    const scaledHeight = (canvasHeight / 2) * scale
+    
+    // Add image to PDF
+    const imgData = canvas.toDataURL('image/png', 1.0)
+    
+    if (scaledHeight <= pageHeight) {
+      // Fits on one page
+      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, scaledHeight)
+    } else {
+      // Need multiple pages
+      let yOffset = 0
+      const pageRatio = pageHeight / scaledHeight
+      const sliceHeight = canvasHeight * pageRatio
+      
+      while (yOffset < canvasHeight) {
+        const sliceCanvas = document.createElement('canvas')
+        const sliceCtx = sliceCanvas.getContext('2d')
+        const remainingHeight = Math.min(sliceHeight, canvasHeight - yOffset)
+        
+        sliceCanvas.width = canvasWidth
+        sliceCanvas.height = remainingHeight
+        
+        // Draw slice
+        sliceCtx.drawImage(canvas, 0, yOffset, canvasWidth, remainingHeight, 0, 0, canvasWidth, remainingHeight)
+        
+        const sliceData = sliceCanvas.toDataURL('image/png', 1.0)
+        
+        if (yOffset > 0) pdf.addPage()
+        pdf.addImage(sliceData, 'PNG', 0, 0, pageWidth, pageHeight)
+        
+        yOffset += sliceHeight
+      }
+    }
+    
+    return pdf
+  } finally {
+    // Show buttons again
+    buttons.forEach(btn => btn.style.display = '')
+    // Remove iframe
+    if (iframe && iframe.parentNode) {
+      document.body.removeChild(iframe)
+    }
+  }
+}
+
 // Direct print functionality
 const printReport = () => {
   if (!process.client) return
@@ -783,6 +1024,27 @@ const printReport = () => {
   }
 
   window.print()
+}
+
+// Direct PDF generation using HTML2Canvas for perfect quality
+const saveAsPDF = async () => {
+  if (!process.client) return
+  
+  if (images.value.length === 0) {
+    alert('กรุณาเลือกรูปภาพก่อนดาวน์โหลด')
+    return
+  }
+
+  try {
+    const pdf = await createPDFFromHTML()
+    if (pdf) {
+      const filename = `${[form.value.houseNumber, form.value.mooMuNumber ? 'หมู่' + form.value.mooMuNumber : '', form.value.name, form.value.lastName].filter(Boolean).join('-')}.pdf`
+      pdf.save(filename)
+    }
+  } catch (error) {
+    console.error('Error creating PDF:', error)
+    alert('เกิดข้อผิดพลาดในการสร้าง PDF: ' + error.message)
+  }
 }
 
 // Export to Word functionality using HTML to Word approach
